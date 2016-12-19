@@ -45,13 +45,11 @@ def main(command):
                                 complete_while_typing=False)
             if subcommand == EXIT_COMMAND:
                 break
-            if subcommand[0] == BASH_EXEC:
-                call_command = subcommand[1:].split()
+            if subcommand and subcommand[0] == BASH_EXEC:
+                call_command = subcommand[1:]
             else:
-                call_subcommand = subcommand.split()
-                call_command = command.split()
-                call_command.extend(call_subcommand)
-            subprocess.call(call_command)
+                call_command = ' '.join([command, subcommand])
+            subprocess.call(call_command, shell=True)
         except EOFError:
             break  # Control-D pressed.
         except KeyboardInterrupt:
