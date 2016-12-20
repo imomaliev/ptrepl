@@ -24,6 +24,7 @@ setup(
     license='MIT',
     packages=find_packages(exclude=['tests']),
     install_requires=[
+        'prompt_toolkit',
         'click',
         'pygments',
     ],
