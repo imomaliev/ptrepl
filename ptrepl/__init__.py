@@ -8,11 +8,19 @@ import click
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.completion import Completer, Completion
+from prompt_toolkit.token import Token
+from prompt_toolkit.styles import style_from_dict
 
 from bash_completion import get_completions
 
 EXIT_COMMAND = 'exit'
 BASH_EXEC = '$'
+
+
+style = style_from_dict({
+    # need space after bg for applying to text
+    Token.Prompt: 'bg: #0088a8 bold'
+})
 
 
 def _get_real_subcommand(command, subcommand):
@@ -54,9 +62,10 @@ def main(command):
     completer = BashCompleter(command)
     while True:
         try:
-            subcommand = prompt('{command} > '.format(command=command),
+            subcommand = prompt(' {command} ❯ '.format(command=command),
                                 completer=completer, history=history,
-                                complete_while_typing=False)
+                                complete_while_typing=False,
+                                style=style)
             subcommand = _get_real_subcommand(command, subcommand)
             if subcommand is None:
                 break
