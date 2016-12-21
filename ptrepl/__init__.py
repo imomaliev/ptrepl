@@ -10,6 +10,7 @@ from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.token import Token
 from prompt_toolkit.styles import style_from_dict
+from prompt_toolkit.key_binding.vi_state import InputMode
 
 from bash_completion import get_completions
 
@@ -19,7 +20,7 @@ BASH_EXEC = '$'
 
 style = style_from_dict({
     # need space after bg for applying to text
-    Token.Prompt: 'bg: #0088a8 bold'
+    Token.Prompt.Command: 'bg: #0088a8 bold'
 })
 
 
@@ -60,12 +61,21 @@ class BashCompleter(Completer):
 def main(command):
     history = InMemoryHistory()
     completer = BashCompleter(command)
+
+    def get_prompt_tokens(cli):
+        mode = '+' if cli.vi_state.input_mode == InputMode.INSERT else ':'
+        return [
+            (Token.Prompt, '{mode} '.format(mode=mode)),
+            (Token.Prompt.Command, '{command} '.format(command=command)),
+            (Token.Prompt, '❯ '.format(mode=mode, command=command)),
+        ]
+
     while True:
         try:
-            subcommand = prompt(' {command} ❯ '.format(command=command),
+            subcommand = prompt('',
                                 completer=completer, history=history,
-                                complete_while_typing=False,
-                                style=style)
+                                complete_while_typing=False, vi_mode=True,
+                                style=style, get_prompt_tokens=get_prompt_tokens)
             subcommand = _get_real_subcommand(command, subcommand)
             if subcommand is None:
                 break
