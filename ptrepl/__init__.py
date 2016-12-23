@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import subprocess
 
 import click
@@ -16,10 +17,15 @@ from bash_completion import get_completions
 
 EXIT_COMMAND = 'exit'
 BASH_EXEC = '$'
+VI_EDIT_MODE = ':'
+VI_NORMAL_MODE = '+'
 
 
 style = style_from_dict({
     # need space after bg for applying to text
+    Token.Prompt.Venv: 'bg: #ansilightgray bold',
+    Token.Prompt.Path: 'bg: #ansiblue bold',
+    Token.Prompt.Branch: 'bg: #ansiyellow bold',
     Token.Prompt.Command: 'bg: #0088a8 bold'
 })
 
@@ -56,15 +62,55 @@ class BashCompleter(Completer):
             yield Completion(completion, start_position=start_position)
 
 
+def _get_venv():
+    if os.getenv('VIRTUAL_ENV'):
+        ps1 = os.getenv('PS1')
+        venv = ps1.split('(', 1)[1].split(')', 1)[0]
+        return '({}) '.format(venv)
+    else:
+        return ''
+
+
+def _get_cwd():
+    cwd = os.getcwd().replace(os.path.expanduser('~'), '~')
+    return '{} '.format(cwd)
+
+
+def _get_branch():
+    branch_commnads = [
+        'git rev-parse --abbrev-ref HEAD',
+        'hg branch'
+    ]
+    for cmd in branch_commnads:
+        try:
+            branch = subprocess.check_output(
+                cmd, shell=True,
+                stderr=subprocess.DEVNULL
+            )
+            return '[{}] '.format(branch.strip().decode())
+        except subprocess.CalledProcessError as e:
+            pass
+    else:
+        return ''
+
+
 @click.command()
 @click.argument('command')
 def main(command):
     history = InMemoryHistory()
     completer = BashCompleter(command)
+    venv = _get_venv()
+    cwd = _get_cwd()
+    branch = _get_branch()
 
     def get_prompt_tokens(cli):
-        mode = '+' if cli.vi_state.input_mode == InputMode.INSERT else ':'
+        mode = VI_NORMAL_MODE if cli.vi_state.input_mode == InputMode.INSERT else VI_EDIT_MODE
         return [
+            (Token.Prompt, ' '),
+            (Token.Prompt.Venv, venv),
+            (Token.Prompt.Path, cwd),
+            (Token.Prompt.Branch, branch),
+            (Token.Prompt, '\n'),
             (Token.Prompt, '{mode} '.format(mode=mode)),
             (Token.Prompt.Command, '{command} '.format(command=command)),
             (Token.Prompt, '❯ '.format(mode=mode, command=command)),
