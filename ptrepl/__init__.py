@@ -101,10 +101,10 @@ def main(command):
     completer = BashCompleter(command)
     venv = _get_venv()
     cwd = _get_cwd()
-    branch = _get_branch()
 
     def get_prompt_tokens(cli):
         mode = VI_NORMAL_MODE if cli.vi_state.input_mode == InputMode.INSERT else VI_EDIT_MODE
+        branch = _get_branch()
         return [
             (Token.Prompt, ' '),
             (Token.Prompt.Venv, venv),
