@@ -3,6 +3,7 @@
 
 import os
 import subprocess
+import datetime
 
 import click
 
@@ -19,14 +20,15 @@ EXIT_COMMAND = 'exit'
 BASH_EXEC = '$'
 VI_EDIT_MODE = ':'
 VI_NORMAL_MODE = '+'
+DATETIME_FORMAT = '%H:%M:%S %d-%b-%y'
 
 
 style = style_from_dict({
-    # need space after bg for applying to text
-    Token.Prompt.Venv: 'bg: #ansilightgray bold',
-    Token.Prompt.Path: 'bg: #ansiblue bold',
-    Token.Prompt.Branch: 'bg: #ansiyellow bold',
-    Token.Prompt.Command: 'bg: #0088a8 bold'
+    Token.Prompt.Venv: '#ansilightgray bold',
+    Token.Prompt.Path: '#ansiblue bold',
+    Token.Prompt.Branch: '#ansiyellow bold',
+    Token.Prompt.Command: '#ansiturquoise bold',
+    Token.Prompt.DateTime: '#ansigreen bold'
 })
 
 
@@ -94,6 +96,10 @@ def _get_branch():
         return ''
 
 
+def _get_datetime():
+    return '|{}| '.format(datetime.datetime.now().strftime(DATETIME_FORMAT))
+
+
 @click.command()
 @click.argument('command')
 def main(command):
@@ -104,12 +110,12 @@ def main(command):
 
     def get_prompt_tokens(cli):
         mode = VI_NORMAL_MODE if cli.vi_state.input_mode == InputMode.INSERT else VI_EDIT_MODE
-        branch = _get_branch()
         return [
             (Token.Prompt, ' '),
             (Token.Prompt.Venv, venv),
             (Token.Prompt.Path, cwd),
-            (Token.Prompt.Branch, branch),
+            (Token.Prompt.Branch, _get_branch()),
+            (Token.Prompt.DateTime, _get_datetime()),
             (Token.Prompt, '\n'),
             (Token.Prompt, '{mode} '.format(mode=mode)),
             (Token.Prompt.Command, '{command} '.format(command=command)),
