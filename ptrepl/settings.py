@@ -1,0 +1,5 @@
+EXIT_COMMAND = 'exit'
+BASH_EXEC = '$'
+VI_EDIT_MODE = ':'
+VI_NORMAL_MODE = '+'
+DATETIME_FORMAT = '%H:%M:%S %d-%b-%y'

@@ -9,18 +9,12 @@ import click
 
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
-from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.token import Token
 from prompt_toolkit.styles import style_from_dict
 from prompt_toolkit.key_binding.vi_state import InputMode
 
-from bash_completion import get_completions
-
-EXIT_COMMAND = 'exit'
-BASH_EXEC = '$'
-VI_EDIT_MODE = ':'
-VI_NORMAL_MODE = '+'
-DATETIME_FORMAT = '%H:%M:%S %d-%b-%y'
+from .completion import BashCompleter
+from .settings import *
 
 
 style = style_from_dict({
@@ -30,38 +24,6 @@ style = style_from_dict({
     Token.Prompt.Command: '#ansiturquoise bold',
     Token.Prompt.DateTime: '#ansigreen bold'
 })
-
-
-def _get_real_subcommand(command, subcommand):
-    """
-    Strip preceding whitespaces, if subcommand starts with command ignore it,
-    if subcommand is equal to exit return None
-    """
-    subcommand = subcommand.lstrip()
-    if subcommand.strip() == EXIT_COMMAND:
-        return None
-    command_with_space = '{} '.format(command)
-    if subcommand.startswith(command_with_space):
-        subcommand = subcommand.replace(command_with_space, '')
-    return subcommand
-
-
-class BashCompleter(Completer):
-    def __init__(self, command):
-        self.command = command
-
-    def get_completions(self, document, complete_event):
-        subcommand = _get_real_subcommand(self.command, document.text)
-        word = document.get_word_before_cursor(WORD=True)
-        if subcommand[0] == BASH_EXEC:
-            command_for_completion = subcommand[1:]
-        else:
-            command_for_completion = ' '.join([self.command, subcommand])
-        start_position = -len(word)
-        if subcommand == word and word[0] == BASH_EXEC:
-            start_position += 1
-        for completion in get_completions(command_for_completion)[0]:
-            yield Completion(completion, start_position=start_position)
 
 
 def _get_venv():
@@ -128,7 +90,7 @@ def main(command):
                                 completer=completer, history=history,
                                 complete_while_typing=False, vi_mode=True,
                                 style=style, get_prompt_tokens=get_prompt_tokens)
-            subcommand = _get_real_subcommand(command, subcommand)
+            subcommand = completer.get_real_subcommand(subcommand)
             if subcommand is None:
                 break
             if subcommand and subcommand[0] == BASH_EXEC:
