@@ -5,6 +5,7 @@ from bash_completion import get_completions
 from .settings import *
 
 
+# https://github.com/xonsh/xonsh/blob/master/xonsh/ptk/completer.py
 class BashCompleter(Completer):
     def __init__(self, command):
         self.command = command
