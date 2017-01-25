@@ -21,7 +21,7 @@ class BashCompleter(Completer):
         if subcommand == word and word[0] == BASH_EXEC:
             start_position += 1
         for completion in get_completions(command_for_completion)[0]:
-            yield Completion(completion, start_position=start_position)
+            yield Completion(completion.strip('\'"'), start_position=start_position)
 
     def get_real_subcommand(self, subcommand):
         """
