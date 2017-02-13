@@ -1,6 +1,6 @@
 from prompt_toolkit.completion import Completer, Completion
 
-from bash_completion import get_completions
+from .bash_completion import bash_completions
 
 from .settings import *
 
@@ -14,13 +14,22 @@ class BashCompleter(Completer):
         subcommand = self.get_real_subcommand(document.text)
         word = document.get_word_before_cursor(WORD=True)
         if subcommand[0] == BASH_EXEC:
-            command_for_completion = subcommand[1:]
+            line = subcommand[1:]
         else:
-            command_for_completion = ' '.join([self.command, subcommand])
+            line = ' '.join([self.command, subcommand])
         start_position = -len(word)
         if subcommand == word and word[0] == BASH_EXEC:
             start_position += 1
-        for completion in get_completions(command_for_completion)[0]:
+        split = line.split()
+        if len(split) > 1 and not line.endswith(' '):
+            prefix = split[-1]
+            begidx = len(line.rsplit(prefix)[0])
+        else:
+            prefix = ''
+            begidx = len(line)
+
+        endidx = len(line)
+        for completion in bash_completions(prefix, line, begidx, endidx, {})[0]:
             yield Completion(completion.strip('\'"'), start_position=start_position)
 
     def get_real_subcommand(self, subcommand):

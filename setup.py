@@ -28,16 +28,13 @@ setup(
         'click',
         'pygments',
     ],
-    # dependency_links=[
-    #     'git+https://github.com/imomaliev/bash-completion-python'
-    # ],
     entry_points={
         'console_scripts': [
             'ptrepl = ptrepl.__init__:main',
         ],
     },
-    # dependency_links = [],
     classifiers=[
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
-])
+    ]
+)
