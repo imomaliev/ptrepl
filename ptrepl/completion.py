@@ -29,7 +29,7 @@ class BashCompleter(Completer):
             begidx = len(line)
 
         endidx = len(line)
-        for completion in bash_completions(prefix, line, begidx, endidx, {})[0]:
+        for completion in bash_completions(prefix, line, begidx, endidx)[0]:
             yield Completion(completion.strip('\'"'), start_position=start_position)
 
     def get_real_subcommand(self, subcommand):
