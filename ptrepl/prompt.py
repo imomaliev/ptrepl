@@ -32,22 +32,27 @@ def _get_cwd():
     return '{} '.format(cwd)
 
 
-def _get_branch():
-    branch_commnads = [
-        'git rev-parse --abbrev-ref HEAD',
-        'hg branch'
-    ]
-    for cmd in branch_commnads:
-        try:
-            branch = subprocess.check_output(
-                cmd, shell=True,
-                stderr=subprocess.DEVNULL
-            )
-            return '[{}] '.format(branch.strip().decode())
-        except subprocess.CalledProcessError as e:
-            pass
-    else:
-        return ''
+def _get_git_branch():
+    cmd = 'git rev-parse --abbrev-ref HEAD'
+    branch = subprocess.check_output(
+        cmd, shell=True,
+        stderr=subprocess.DEVNULL
+    )
+    return '[{}] '.format(branch.strip().decode())
+
+
+def _get_hg_branch():
+    with open('.hg/branch', 'r') as f:
+        branch = f.read()
+        return '[{}] '.format(branch.strip(os.linesep))
+
+
+def _get_branch_func():
+    if os.path.exists('.git/'):
+        return _get_git_branch
+    elif os.path.exists('.hg/'):
+        return _get_hg_branch
+    return lambda: ''
 
 
 def _get_datetime():
@@ -57,6 +62,7 @@ def _get_datetime():
 def get_prompt_tokens(command):
     venv = _get_venv()
     cwd = _get_cwd()
+    _get_branch = _get_branch_func()
 
     def _get_prompt_tokens(cli):
         mode = VI_NORMAL_MODE if cli.vi_state.input_mode == InputMode.INSERT else VI_EDIT_MODE
