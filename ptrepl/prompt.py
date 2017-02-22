@@ -32,8 +32,13 @@ def _get_cwd():
     return '{} '.format(cwd)
 
 
-def _get_git_branch():
-    cmd = 'git rev-parse --abbrev-ref HEAD'
+def _get_branch():
+    if os.path.exists('.git'):
+        cmd = 'git rev-parse --abbrev-ref HEAD'
+    elif os.path.exists('.hg'):
+        cmd = 'hg branch'
+    else:
+        return ''
     branch = subprocess.check_output(
         cmd, shell=True,
         stderr=subprocess.DEVNULL
@@ -41,41 +46,33 @@ def _get_git_branch():
     return '[{}] '.format(branch.strip().decode())
 
 
-def _get_hg_branch():
-    with open('.hg/branch', 'r') as f:
-        branch = f.read()
-        return '[{}] '.format(branch.strip(os.linesep))
-
-
-def _get_branch_func():
-    if os.path.exists('.git/'):
-        return _get_git_branch
-    elif os.path.exists('.hg/'):
-        return _get_hg_branch
-    return lambda: ''
-
-
 def _get_datetime():
     return '|{}| '.format(datetime.datetime.now().strftime(DATETIME_FORMAT))
 
 
 def get_prompt_tokens(command):
-    venv = _get_venv()
-    cwd = _get_cwd()
-    _get_branch = _get_branch_func()
+    # https://github.com/jonathanslenders/python-prompt-toolkit/issues/247
+    tokens_pre = [
+        (Token.Prompt, ' '),
+        (Token.Prompt.Venv, _get_venv()),
+        (Token.Prompt.Path, _get_cwd()),
+        (Token.Prompt.Branch, _get_branch()),
+        (Token.Prompt.DateTime, _get_datetime()),
+        (Token.Prompt, '\n')
+    ]
+
+    tokens_post = [
+        (Token.Prompt.Command, '{command} '.format(command=command)),
+        (Token.Prompt, '❯ '),
+    ]
 
     def _get_prompt_tokens(cli):
         mode = VI_NORMAL_MODE if cli.vi_state.input_mode == InputMode.INSERT else VI_EDIT_MODE
-        return [
-            (Token.Prompt, ' '),
-            (Token.Prompt.Venv, venv),
-            (Token.Prompt.Path, cwd),
-            (Token.Prompt.Branch, _get_branch()),
-            (Token.Prompt.DateTime, _get_datetime()),
-            (Token.Prompt, '\n'),
-            (Token.Prompt, '{mode} '.format(mode=mode)),
-            (Token.Prompt.Command, '{command} '.format(command=command)),
-            (Token.Prompt, '❯ '.format(mode=mode, command=command)),
-        ]
+        _prompt_tokens = tokens_pre[:]
+        _prompt_tokens.append((
+            Token.Prompt, '{mode} '.format(mode=mode)
+        ))
+        _prompt_tokens.extend(tokens_post)
+        return _prompt_tokens
 
     return _get_prompt_tokens

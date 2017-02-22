@@ -18,10 +18,10 @@ from .settings import *
 def main(command):
     history = InMemoryHistory()
     completer = BashCompleter(command)
-    _get_prompt_tokens = get_prompt_tokens(command)
 
     while True:
         try:
+            _get_prompt_tokens = get_prompt_tokens(command)
             subcommand = prompt('',
                                 completer=completer, history=history,
                                 complete_while_typing=False, vi_mode=True,
