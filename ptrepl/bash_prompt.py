@@ -68,21 +68,17 @@ CWD = r'\w'
 DATETIME = r'\D'
 NEWLINE = r'\n'
 USER = r'\u'
-NONPRINT_BEGIN = r'\['
-NONPRINT_END = r'\]'
-
 
 regexes = OrderedDict((
-    ('RE_CWD', re.compile(r'^\\w')),
-    ('RE_CMD', re.compile(r'^\$\([^\)]*\)')),
-    ('RE_VENV', re.compile(r'^\([^\)]*\)')),
-    ('RE_DATETIME', re.compile(r'^\\D\{[^\}]*\}')),
-    ('RE_ESCAPE', re.compile(r'^\\e')),
-    ('RE_NEWLINE', re.compile(r'^\\n')),
-    ('RE_USER', re.compile(r'^\\u')),
-    ('RE_NONPRINT_BEGIN', re.compile(r'^\\\[')),
-    ('RE_NONPRINT_END', re.compile(r'\\\]')),
-    ('RE_STRING', re.compile(r'^[^\\\$]+')),
+    ('cwd', re.compile(r'^\\w')),
+    ('cmd', re.compile(r'^\$\([^\)]*\)')),
+    ('venv', re.compile(r'^\([^\)]*\)')),
+    ('datetime', re.compile(r'^\\D\{[^\}]*\}')),
+    ('color', re.compile(r'^\\\[\\e\[\d;\d{2}m\\\]')),
+    ('nocolor', re.compile(r'^\\\[\\e\[m\\\]')),
+    ('newline', re.compile(r'^\\n')),
+    ('user', re.compile(r'^\\u')),
+    ('string', re.compile(r'^[^\\\$]+')),
 ))
 
 
@@ -94,6 +90,25 @@ source ~/.bashrc
 
 echo "{cmd}"
 """
+
+ANSI_COLORS = {
+    '0;30': 'BLACK',
+    '0;31': 'RED',
+    '0;32': 'GREEN',
+    '0;33': 'YELLOW',
+    '0;34': 'BLUE',
+    '0;35': 'PURPLE',
+    '0;36': 'CYAN',
+    '0;37': 'WHITE',
+    '1;30': 'BOLD_BLACK',
+    '1;31': 'BOLD_RED',
+    '1;32': 'BOLD_GREEN',
+    '1;33': 'BOLD_YELLOW',
+    '1;34': 'BOLD_BLUE',
+    '1;35': 'BOLD_PURPLE',
+    '1;36': 'BOLD_CYAN',
+    '1;37': 'BOLD_WHITE'
+}
 
 
 class Lexer(object):
@@ -118,25 +133,28 @@ class Lexer(object):
         return datetime.datetime.now().strftime(datetime_format)
 
     def tokenize(self, source):
+        style = getattr(Token, 'NO_COLOR')
         while True:
-            for regex in regexes.values():
+            for _type, regex in regexes.items():
                 captures = self.regexec(regex, source)
                 if captures:
                     raw_token = captures[0]
+                    if _type == 'color':
+                        style = getattr(Token, ANSI_COLORS[raw_token[5:9]])
                     if raw_token == CWD:
-                        yield (Token.Prompt.Cwd, getattr(self, 'cwd')())
+                        yield (style, getattr(self, 'cwd')())
                     elif raw_token.startswith(r'$(') and raw_token.endswith(')'):
-                        yield (Token.Prompt.Branch, getattr(self, 'cmd')(raw_token))
+                        yield (style, getattr(self, 'cmd')(raw_token))
                     elif raw_token.startswith(DATETIME):
-                        yield (Token.Prompt.DateTime, getattr(self, 'datetime')(raw_token[3:-1]))
+                        yield (style, getattr(self, 'datetime')(raw_token[3:-1]))
                     elif raw_token.startswith('(') and raw_token.endswith(')') and os.getenv('VIRTUAL_ENV'):
-                        yield (Token.Prompt.Venv, raw_token)
+                        yield (style, raw_token)
                     elif raw_token.startswith(NEWLINE):
-                        yield (Token.Prompt, '\n')
+                        yield (style, '\n')
                     elif raw_token == USER:
-                        yield (Token.Prompt, os.getenv('USERNAME') or os.getenv('USER'))
+                        yield (style, os.getenv('USERNAME') or os.getenv('USER'))
                     elif raw_token[0] not in ('\\', '['):
-                        yield (Token.Prompt, raw_token)
+                        yield (style, raw_token)
                     source = source[len(captures[0]):]
                     break
             else:

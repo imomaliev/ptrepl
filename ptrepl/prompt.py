@@ -10,11 +10,11 @@ from .settings import *
 
 
 style = style_from_dict({
-    Token.Prompt.Venv: '#ansilightgray bold',
-    Token.Prompt.Cwd: '#ansiblue bold',
-    Token.Prompt.Branch: '#ansiyellow bold',
-    Token.Prompt.Command: '#ansiturquoise bold',
-    Token.Prompt.DateTime: '#ansigreen bold'
+    Token.BOLD_BLACK: '#ansilightgray bold',
+    Token.BOLD_BLUE: '#ansiblue bold',
+    Token.BOLD_YELLOW: '#ansiyellow bold',
+    Token.BOLD_CYAN: '#ansiturquoise bold',
+    Token.BOLD_GREEN: '#ansigreen bold'
 })
 
 
@@ -34,7 +34,7 @@ def get_prompt_tokens(command):
             Token.Prompt, mode
         ))
         _prompt_tokens.insert(new_line + 1, (
-            Token.Prompt.Command, ' {command}'.format(command=command)
+            Token.BOLD_CYAN, ' {command}'.format(command=command)
         ))
         return _prompt_tokens
 
