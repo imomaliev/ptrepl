@@ -10,10 +10,10 @@ from .settings import *
 
 
 style = style_from_dict({
-    Token.BOLD_BLACK: '#ansilightgray bold',
     Token.BOLD_BLUE: '#ansiblue bold',
     Token.BOLD_YELLOW: '#ansiyellow bold',
     Token.BOLD_CYAN: '#ansiturquoise bold',
+    Token.BOLD_BLACK: '#ansiblack bold',
     Token.BOLD_GREEN: '#ansigreen bold'
 })
 

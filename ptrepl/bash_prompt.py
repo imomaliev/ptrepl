@@ -64,10 +64,6 @@ from collections import OrderedDict
 
 from prompt_toolkit.token import Token
 
-CWD = r'\w'
-DATETIME = r'\D'
-NEWLINE = r'\n'
-USER = r'\u'
 
 regexes = OrderedDict((
     ('cwd', re.compile(r'^\\w')),
@@ -83,11 +79,6 @@ regexes = OrderedDict((
 
 
 BASH_SCRIPT = """
-source /etc/profile
-source /etc/bash_completion.d/git-prompt
-source ~/.bash_profile
-source ~/.bashrc
-
 echo "{cmd}"
 """
 
@@ -116,21 +107,34 @@ class Lexer(object):
     def regexec(regex, source):
         matches = regex.match(source)
         if matches:
-            return (source[matches.start():matches.end()],) + matches.groups()
+            end = matches.end()
+            return source[:end], source[end:]
         return None
 
-    def cwd(self):
+    def cwd(self, raw_token):
         return os.getcwd().replace(os.path.expanduser('~'), '~')
 
-    def cmd(self, cmd):
-        script = BASH_SCRIPT.format(cmd=cmd)
+    def cmd(self, raw_token):
+        script = BASH_SCRIPT.format(cmd=raw_token)
         out = subprocess.check_output(
-            ['bash', '-c', script], universal_newlines=True,
+            ['bash', '-lc', script], universal_newlines=True,
             stderr=subprocess.PIPE).strip('\n')
         return out
 
-    def datetime(self, datetime_format):
-        return datetime.datetime.now().strftime(datetime_format)
+    def venv(self, raw_token):
+        return raw_token
+
+    def datetime(self, raw_token):
+        return datetime.datetime.now().strftime(raw_token[3:-1])
+
+    def newline(self, raw_token):
+        return '\n'
+
+    def user(self, raw_token):
+        return os.getenv('USERNAME') or os.getenv('USER')
+
+    def string(self, raw_token):
+        return raw_token
 
     def tokenize(self, source):
         style = getattr(Token, 'NO_COLOR')
@@ -138,24 +142,15 @@ class Lexer(object):
             for _type, regex in regexes.items():
                 captures = self.regexec(regex, source)
                 if captures:
-                    raw_token = captures[0]
+                    raw_token, source = captures
                     if _type == 'color':
                         style = getattr(Token, ANSI_COLORS[raw_token[5:9]])
-                    if raw_token == CWD:
-                        yield (style, getattr(self, 'cwd')())
-                    elif raw_token.startswith(r'$(') and raw_token.endswith(')'):
-                        yield (style, getattr(self, 'cmd')(raw_token))
-                    elif raw_token.startswith(DATETIME):
-                        yield (style, getattr(self, 'datetime')(raw_token[3:-1]))
-                    elif raw_token.startswith('(') and raw_token.endswith(')') and os.getenv('VIRTUAL_ENV'):
-                        yield (style, raw_token)
-                    elif raw_token.startswith(NEWLINE):
-                        yield (style, '\n')
-                    elif raw_token == USER:
-                        yield (style, os.getenv('USERNAME') or os.getenv('USER'))
-                    elif raw_token[0] not in ('\\', '['):
-                        yield (style, raw_token)
-                    source = source[len(captures[0]):]
+                        break
+                    elif _type == 'venv' and not os.getenv('VIRTUAL_ENV'):
+                        _type = 'string'
+                    elif _type == 'nocolor':
+                        break
+                    yield (style, getattr(self, _type, lambda t: t)(raw_token))
                     break
             else:
                 break
