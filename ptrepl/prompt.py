@@ -20,28 +20,22 @@ style = style_from_dict({
 
 def get_prompt_tokens(command):
     # https://github.com/jonathanslenders/python-prompt-toolkit/issues/247
-    tokens = Lexer().tokenize(os.getenv('PS1'))
-    tokens_pre = []
-    new_line = False
-    tokens_post = [
-        (Token.Prompt.Command, command),
-    ]
-
-    for token in tokens:
-        if new_line:
-            tokens_post.append(token)
-        else:
-            tokens_pre.append(token)
+    new_line = 0
+    tokens = []
+    for i, token in enumerate(Lexer().tokenize(os.getenv('PS1'))):
+        tokens.append(token)
         if token[1] == '\n':
-            new_line = True
+            new_line = i + 1
 
     def _get_prompt_tokens(cli):
         mode = VI_NORMAL_MODE if cli.vi_state.input_mode == InputMode.INSERT else VI_EDIT_MODE
-        _prompt_tokens = tokens_pre[:]
-        _prompt_tokens.append((
-            Token.Prompt, '{mode} '.format(mode=mode)
+        _prompt_tokens = tokens[:]
+        _prompt_tokens.insert(new_line, (
+            Token.Prompt, mode
         ))
-        _prompt_tokens.extend(tokens_post)
+        _prompt_tokens.insert(new_line + 1, (
+            Token.Prompt.Command, ' {command}'.format(command=command)
+        ))
         return _prompt_tokens
 
     return _get_prompt_tokens

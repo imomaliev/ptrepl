@@ -67,6 +67,7 @@ from prompt_toolkit.token import Token
 CWD = r'\w'
 DATETIME = r'\D'
 NEWLINE = r'\n'
+USER = r'\u'
 NONPRINT_BEGIN = r'\['
 NONPRINT_END = r'\]'
 
@@ -78,6 +79,7 @@ regexes = OrderedDict((
     ('RE_DATETIME', re.compile(r'^\\D\{[^\}]*\}')),
     ('RE_ESCAPE', re.compile(r'^\\e')),
     ('RE_NEWLINE', re.compile(r'^\\n')),
+    ('RE_USER', re.compile(r'^\\u')),
     ('RE_NONPRINT_BEGIN', re.compile(r'^\\\[')),
     ('RE_NONPRINT_END', re.compile(r'\\\]')),
     ('RE_STRING', re.compile(r'^[^\\\$]+')),
@@ -131,6 +133,8 @@ class Lexer(object):
                         yield (Token.Prompt.Venv, raw_token)
                     elif raw_token.startswith(NEWLINE):
                         yield (Token.Prompt, '\n')
+                    elif raw_token == USER:
+                        yield (Token.Prompt, os.getenv('USERNAME') or os.getenv('USER'))
                     elif raw_token[0] not in ('\\', '['):
                         yield (Token.Prompt, raw_token)
                     source = source[len(captures[0]):]
