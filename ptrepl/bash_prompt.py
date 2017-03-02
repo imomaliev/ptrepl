@@ -78,10 +78,6 @@ regexes = OrderedDict((
 ))
 
 
-BASH_SCRIPT = """
-echo "{cmd}"
-"""
-
 ANSI_COLORS = {
     '0;30': 'BLACK',
     '0;31': 'RED',
@@ -114,12 +110,33 @@ class Lexer(object):
     def cwd(self, raw_token):
         return os.getcwd().replace(os.path.expanduser('~'), '~')
 
-    def cmd(self, raw_token):
-        script = BASH_SCRIPT.format(cmd=raw_token)
-        out = subprocess.check_output(
-            ['bash', '-lc', script], universal_newlines=True,
-            stderr=subprocess.PIPE).strip('\n')
-        return out
+    def _get_git_branch(self):
+        if os.path.exists('.git'):
+            branch = self.cmd("git symbolic-ref HEAD 2> /dev/null || git describe --tags --exact-match HEAD", is_script=False)
+            if 'refs/heads/' in branch:
+                branch = branch.replace('refs/heads/', '')
+            else:
+                branch = '({})'.format(branch)
+        else:
+            return ''
+        return '[{}] '.format(branch)
+
+    def _get_hg_branch(self):
+        if os.path.exists('.hg'):
+            return '[{}] '.format(self.cmd("$(hg prompt '{branch}')", is_script=True))
+        else:
+            return ''
+
+    def cmd(self, raw_token, is_script=True):
+        if '__git_ps1' in raw_token:
+            return self._get_git_branch()
+        if '__hg_ps1' in raw_token:
+            return self._get_hg_branch()
+        cmd = 'echo "{}"'.format(raw_token) if is_script else raw_token
+        return subprocess.check_output(
+            ['bash', '-c', cmd], universal_newlines=True,
+            stderr=subprocess.PIPE
+        ).strip('\n')
 
     def venv(self, raw_token):
         return raw_token
