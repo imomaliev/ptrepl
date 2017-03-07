@@ -13,6 +13,8 @@ class BashCompleter(Completer):
     def get_completions(self, document, complete_event):
         subcommand = self.get_real_subcommand(document.text)
         word = document.get_word_before_cursor(WORD=True)
+        if not subcommand:
+            return
         if subcommand[0] == BASH_EXEC:
             line = subcommand[1:]
         else:
