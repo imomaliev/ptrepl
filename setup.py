@@ -16,7 +16,7 @@ def read(fname):
 
 setup(
     name='ptrepl',
-    version='0.0.1',
+    version='0.2.0',
     description='Run command as REPL-environment',
     long_description=read('README.md'),
     author='Sardorbek Imomaliev',
@@ -30,7 +30,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'ptrepl = ptrepl.__init__:main',
+            'ptrepl = ptrepl.cli:main',
         ],
     },
     classifiers=[
