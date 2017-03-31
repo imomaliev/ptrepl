@@ -3,18 +3,19 @@ import subprocess
 import click
 
 from prompt_toolkit import prompt
-from prompt_toolkit.history import InMemoryHistory
+from prompt_toolkit.history import FileHistory
 
 from .completion import BashCompleter
 from .prompt import style, get_prompt_tokens
 from .settings import *
 from .alias import get_aliases
+from .history import get_history
 
 
 @click.command()
 @click.argument('command')
 def main(command):
-    history = InMemoryHistory()
+    history = FileHistory(get_history(command))
     completer = BashCompleter(command)
     aliases = get_aliases()
 

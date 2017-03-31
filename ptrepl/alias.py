@@ -1,10 +1,13 @@
 import json
-import os
+
+from pathlib import Path
+
 from .xdg import XDG_CONFIG_HOME
 
+
 def get_aliases():
-    filename = os.path.join(XDG_CONFIG_HOME, 'ptrepl/aliases.json')
-    if os.path.isfile(filename):
-        with open(filename, 'r') as pa:
-            return json.load(pa)
+    aliases = Path(XDG_CONFIG_HOME, 'ptrepl/aliases.json')
+    if aliases.exists():
+        with aliases.open('r') as a:
+            return json.load(a)
     return {}
