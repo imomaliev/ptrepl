@@ -68,12 +68,15 @@ from prompt_toolkit.token import Token
 regexes = OrderedDict((
     ('cwd', re.compile(r'^\\w')),
     ('cmd', re.compile(r'^\$\([^\)]*\)')),
+    ('array', re.compile(r'^\$\{[^\}]*\}')),
     ('venv', re.compile(r'^\([^\)]*\)')),
     ('datetime', re.compile(r'^\\D\{[^\}]*\}')),
-    ('color', re.compile(r'^\\\[\\e\[\d;\d{2}m\\\]')),
-    ('nocolor', re.compile(r'^\\\[\\e\[m\\\]')),
+    ('color', re.compile(r'^\\\[(\\e|\\033)\[\d{1,2};\d{2}m\\\]')),
+    ('nocolor', re.compile(r'^\\\[(\\e|\\033)\[\d{0,2}m\\\]')),
     ('newline', re.compile(r'^\\n')),
     ('user', re.compile(r'^\\u')),
+    ('hostname', re.compile(r'^\\h')),
+    ('dollar', re.compile(r'^\\\$')),
     ('string', re.compile(r'^[^\\\$]+')),
 ))
 
@@ -150,8 +153,17 @@ class Lexer(object):
     def user(self, raw_token):
         return os.getenv('USERNAME') or os.getenv('USER')
 
+    def hostname(self, raw_token):
+        return os.uname()[1]
+
+    def dollar(self, raw_token):
+        return '$'
+
     def string(self, raw_token):
         return raw_token
+
+    def array(self, raw_token):
+        return ''
 
     def tokenize(self, source):
         style = getattr(Token, 'NO_COLOR')
@@ -161,7 +173,7 @@ class Lexer(object):
                 if captures:
                     raw_token, source = captures
                     if _type == 'color':
-                        style = getattr(Token, ANSI_COLORS[raw_token[5:9]])
+                        style = getattr(Token, ANSI_COLORS[raw_token[-7:-3]])
                         break
                     elif _type == 'venv' and not os.getenv('VIRTUAL_ENV'):
                         _type = 'string'
