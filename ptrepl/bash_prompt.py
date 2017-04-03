@@ -77,7 +77,7 @@ regexes = OrderedDict((
     ('user', re.compile(r'^\\u')),
     ('hostname', re.compile(r'^\\h')),
     ('dollar', re.compile(r'^\\\$')),
-    ('string', re.compile(r'^[^\\\$]+')),
+    ('string', re.compile(r'^.')),
 ))
 
 
