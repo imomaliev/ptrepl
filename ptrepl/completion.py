@@ -2,7 +2,7 @@ from prompt_toolkit.completion import Completer, Completion
 
 from .bash_completion import bash_completions
 
-from .settings import *
+from .settings import settings
 
 
 # https://github.com/xonsh/xonsh/blob/master/xonsh/ptk/completer.py
@@ -15,12 +15,12 @@ class BashCompleter(Completer):
         word = document.get_word_before_cursor(WORD=True)
         if not subcommand:
             return
-        if subcommand[0] == BASH_EXEC:
+        if subcommand[0] == settings.BASH_EXEC:
             line = subcommand[1:]
         else:
             line = ' '.join([self.command, subcommand])
         start_position = -len(word)
-        if subcommand == word and word[0] == BASH_EXEC:
+        if subcommand == word and word[0] == settings.BASH_EXEC:
             start_position += 1
         split = line.split()
         if len(split) > 1 and not line.endswith(' '):
@@ -40,7 +40,7 @@ class BashCompleter(Completer):
         if subcommand is equal to exit return None
         """
         subcommand = subcommand.lstrip()
-        if subcommand.strip() == EXIT_COMMAND:
+        if subcommand.strip() == settings.EXIT_COMMAND:
             return None
         command_with_space = '{} '.format(self.command)
         if subcommand.startswith(command_with_space):

@@ -7,9 +7,9 @@ from prompt_toolkit.history import FileHistory
 
 from .completion import BashCompleter
 from .prompt import style, get_prompt_tokens
-from .settings import *
-from .alias import get_aliases
+from .settings import settings
 from .history import get_history
+from .utils import get_xdg_json_data
 
 
 @click.command()
@@ -17,7 +17,7 @@ from .history import get_history
 def main(command):
     history = FileHistory(get_history(command))
     completer = BashCompleter(command)
-    aliases = get_aliases()
+    aliases = get_xdg_json_data('aliases.json')
 
     while True:
         try:
@@ -29,7 +29,7 @@ def main(command):
             subcommand = completer.get_real_subcommand(subcommand)
             if subcommand is None:
                 break
-            if subcommand and subcommand[0] == BASH_EXEC:
+            if subcommand and subcommand[0] == settings.BASH_EXEC:
                 call_command = subcommand[1:]
             else:
                 call_command = ' '.join([command, subcommand])

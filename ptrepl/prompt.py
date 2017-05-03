@@ -6,7 +6,7 @@ from prompt_toolkit.styles import style_from_dict
 from prompt_toolkit.key_binding.vi_state import InputMode
 
 from .bash_prompt import Lexer
-from .settings import *
+from .settings import settings
 
 
 style = style_from_dict({
@@ -28,7 +28,9 @@ def get_prompt_tokens(command):
             new_line = i + 1
 
     def _get_prompt_tokens(cli):
-        mode = VI_NORMAL_MODE if cli.vi_state.input_mode == InputMode.INSERT else VI_EDIT_MODE
+        if not settings.PARSE_PS1:
+            return ((Token.Prompt, command), (Token.Prompt, ' > '))
+        mode = settings.VI_NORMAL_MODE if cli.vi_state.input_mode == InputMode.INSERT else settings.VI_EDIT_MODE
         _prompt_tokens = tokens[:]
         _prompt_tokens.insert(new_line, (
             Token.Prompt, mode
