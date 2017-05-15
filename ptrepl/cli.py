@@ -14,14 +14,17 @@ from .utils import get_xdg_json_data
 
 @click.command()
 @click.argument('command')
-def main(command):
+@click.option('--prompt', help='Override prompt')
+def main(command, **kwargs):
     history = FileHistory(get_history(command))
     completer = BashCompleter(command)
     aliases = get_xdg_json_data('aliases.json')
 
+    prompt_str = kwargs.get('prompt') or command
+
     while True:
         try:
-            _get_prompt_tokens = get_prompt_tokens(command)
+            _get_prompt_tokens = get_prompt_tokens(prompt_str)
             subcommand = prompt('',
                                 completer=completer, history=history,
                                 complete_while_typing=False, vi_mode=True,
