@@ -115,7 +115,7 @@ class Lexer(object):
 
     def _get_git_branch(self):
         if os.path.exists('.git'):
-            branch = self.cmd("git symbolic-ref HEAD 2> /dev/null || git describe --tags --exact-match HEAD", is_script=False)
+            branch = self.cmd("git symbolic-ref HEAD 2> /dev/null || git describe --tags --exact-match HEAD 2> /dev/null || git rev-parse HEAD", is_script=False)
             if 'refs/heads/' in branch:
                 branch = branch.replace('refs/heads/', '')
             else:
