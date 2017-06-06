@@ -7,10 +7,12 @@ from .settings import settings
 
 # https://github.com/xonsh/xonsh/blob/master/xonsh/ptk/completer.py
 class BashCompleter(Completer):
-    def __init__(self, command):
+    def __init__(self, command, aliases):
         self.command = command
+        self.aliases = aliases
 
     def get_completions(self, document, complete_event):
+        command = self.command
         subcommand = self.get_real_subcommand(document.text)
         word = document.get_word_before_cursor(WORD=True)
         if not subcommand:
@@ -18,7 +20,7 @@ class BashCompleter(Completer):
         if subcommand[0] == settings.BASH_EXEC:
             line = subcommand[1:]
         else:
-            line = ' '.join([self.command, subcommand])
+            line = ' '.join([command, subcommand])
         start_position = -len(word)
         if subcommand == word and word[0] == settings.BASH_EXEC:
             start_position += 1
@@ -33,6 +35,10 @@ class BashCompleter(Completer):
         endidx = len(line)
         for completion in bash_completions(prefix, line, begidx, endidx)[0]:
             yield Completion(completion.strip('\'"'), start_position=start_position)
+        if len(split) == 2:
+            for a in self.aliases:
+                if a.startswith('{} {}'.format(command, prefix)):
+                    yield Completion(a.replace('{} '.format(command), ''), start_position=start_position)
 
     def get_real_subcommand(self, subcommand):
         """

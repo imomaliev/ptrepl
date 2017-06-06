@@ -17,8 +17,8 @@ from .utils import get_xdg_json_data
 @click.option('--prompt', help='Override prompt')
 def main(command, **kwargs):
     history = FileHistory(get_history(command))
-    completer = BashCompleter(command)
     aliases = get_xdg_json_data('aliases.json')
+    completer = BashCompleter(command, aliases)
 
     prompt_str = kwargs.get('prompt') or command
 
