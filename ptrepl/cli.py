@@ -2,7 +2,7 @@ import subprocess
 
 import click
 
-from prompt_toolkit import prompt
+from prompt_toolkit.shortcuts import create_prompt_application, run_application
 from prompt_toolkit.history import FileHistory
 
 from .completion import BashCompleter
@@ -10,6 +10,25 @@ from .prompt import style, get_prompt_tokens
 from .settings import settings
 from .history import get_history
 from .utils import get_xdg_json_data
+
+
+def prompt(application, **kwargs):
+    """
+    Operate on application
+    """
+
+    patch_stdout = kwargs.pop('patch_stdout', False)
+    return_asyncio_coroutine = kwargs.pop('return_asyncio_coroutine', False)
+    true_color = kwargs.pop('true_color', False)
+    refresh_interval = kwargs.pop('refresh_interval', 0)
+    eventloop = kwargs.pop('eventloop', None)
+
+    return run_application(application,
+        patch_stdout=patch_stdout,
+        return_asyncio_coroutine=return_asyncio_coroutine,
+        true_color=true_color,
+        refresh_interval=refresh_interval,
+        eventloop=eventloop)
 
 
 @click.command()
@@ -25,10 +44,16 @@ def main(command, **kwargs):
     while True:
         try:
             _get_prompt_tokens = get_prompt_tokens(prompt_str)
-            subcommand = prompt('',
-                                completer=completer, history=history,
-                                complete_while_typing=False, vi_mode=True,
-                                style=style, get_prompt_tokens=_get_prompt_tokens)
+
+            application = create_prompt_application('',
+                completer=completer, history=history,
+                complete_while_typing=False, vi_mode=True,
+                style=style, get_prompt_tokens=_get_prompt_tokens
+            )
+            subcommand = prompt(application)
+            if subcommand.strip() == '!!':
+                subcommand = application.buffer.history.strings[-2]
+                application.buffer.history.strings[-1] = subcommand
             subcommand = completer.get_real_subcommand(subcommand)
             if subcommand is None:
                 break
