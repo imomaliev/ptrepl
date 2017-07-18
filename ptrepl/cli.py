@@ -4,6 +4,7 @@ import click
 
 from prompt_toolkit.shortcuts import create_prompt_application, run_application
 from prompt_toolkit.history import FileHistory
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
 from .completion import BashCompleter
 from .prompt import style, get_prompt_tokens
@@ -28,7 +29,8 @@ def prompt(application, **kwargs):
         return_asyncio_coroutine=return_asyncio_coroutine,
         true_color=true_color,
         refresh_interval=refresh_interval,
-        eventloop=eventloop)
+        eventloop=eventloop
+    )
 
 
 @click.command()
@@ -48,7 +50,8 @@ def main(command, **kwargs):
             application = create_prompt_application('',
                 completer=completer, history=history,
                 complete_while_typing=False, vi_mode=True,
-                style=style, get_prompt_tokens=_get_prompt_tokens
+                style=style, get_prompt_tokens=_get_prompt_tokens,
+                auto_suggest=AutoSuggestFromHistory()
             )
             subcommand = prompt(application)
             if subcommand.strip() == '!!':

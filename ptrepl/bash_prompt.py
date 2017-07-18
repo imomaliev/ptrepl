@@ -130,11 +130,19 @@ class Lexer(object):
         else:
             return ''
 
+    def _get_dotfiles(self):
+        if os.path.exists('.dotfiles'):
+            return '{{{}}} '.format(os.path.basename(os.path.dirname(os.path.realpath(__file__))))
+        else:
+            return ''
+
     def cmd(self, raw_token, is_script=True):
         if '__git_ps1' in raw_token:
             return self._get_git_branch()
         if '__hg_ps1' in raw_token:
             return self._get_hg_branch()
+        if '__dotfiles_ps1' in raw_token:
+            return self._get_dotfiles()
         cmd = 'echo "{}"'.format(raw_token) if is_script else raw_token
         return subprocess.check_output(
             ['bash', '-c', cmd], universal_newlines=True,
