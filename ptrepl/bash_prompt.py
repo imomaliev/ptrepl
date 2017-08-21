@@ -132,7 +132,7 @@ class Lexer(object):
 
     def _get_dotfiles(self):
         if os.path.exists('.dotfiles'):
-            return '{{{}}} '.format(os.path.basename(os.path.dirname(os.path.realpath(__file__))))
+            return '{{{}}} '.format(os.path.basename(os.getcwd()))
         else:
             return ''
 
