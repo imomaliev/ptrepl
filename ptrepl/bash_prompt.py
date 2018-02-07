@@ -62,7 +62,7 @@ import subprocess
 
 from collections import OrderedDict
 
-from prompt_toolkit.token import Token
+from pygments.token import Token
 
 
 regexes = OrderedDict((

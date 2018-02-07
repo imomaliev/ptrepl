@@ -4,9 +4,10 @@ from .utils import get_xdg_json_data
 DEFAULTS = {
     "EXIT_COMMAND": "exit",
     "BASH_EXEC": "$",
+    "VI_MODE": False,
+    "PREPEND_SPACE": False,
     "VI_EDIT_MODE": ":",
     "VI_NORMAL_MODE": "+",
-    "DATETIME_FORMAT": "%H:%M:%S %d-%b-%y",
     "PARSE_PS1": False  # experimental
 }
 
