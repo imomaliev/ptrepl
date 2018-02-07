@@ -24,9 +24,13 @@ setup(
     license='MIT',
     packages=find_packages(exclude=['tests']),
     install_requires=[
-        'prompt_toolkit',
+        'prompt_toolkit==2.0.0',
         'click',
         'pygments',
+    ],
+    # https://stackoverflow.com/a/3481388/3627387
+    dependency_links=[
+        'git+https://github.com/jonathanslenders/python-prompt-toolkit.git@2.0#egg=prompt_toolkit-2.0.0',
     ],
     entry_points={
         'console_scripts': [
