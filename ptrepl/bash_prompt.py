@@ -71,34 +71,12 @@ regexes = OrderedDict((
     ('array', re.compile(r'^\$\{[^\}]*\}')),
     ('venv', re.compile(r'^\([^\)]*\)')),
     ('datetime', re.compile(r'^\\D\{[^\}]*\}')),
-    ('color', re.compile(r'^\\\[(\\e|\\033)\[\d{1,2};\d{2}m\\\]')),
-    ('nocolor', re.compile(r'^\\\[(\\e|\\033)\[\d{0,2}m\\\]')),
     ('newline', re.compile(r'^\\n')),
     ('user', re.compile(r'^\\u')),
     ('hostname', re.compile(r'^\\h')),
     ('dollar', re.compile(r'^\\\$')),
     ('string', re.compile(r'^.')),
 ))
-
-
-ANSI_COLORS = {
-    '0;30': 'BLACK',
-    '0;31': 'RED',
-    '0;32': 'GREEN',
-    '0;33': 'YELLOW',
-    '0;34': 'BLUE',
-    '0;35': 'PURPLE',
-    '0;36': 'CYAN',
-    '0;37': 'WHITE',
-    '1;30': 'BOLD_BLACK',
-    '1;31': 'BOLD_RED',
-    '1;32': 'BOLD_GREEN',
-    '1;33': 'BOLD_YELLOW',
-    '1;34': 'BOLD_BLUE',
-    '1;35': 'BOLD_PURPLE',
-    '1;36': 'BOLD_CYAN',
-    '1;37': 'BOLD_WHITE'
-}
 
 
 class Lexer(object):
@@ -180,14 +158,16 @@ class Lexer(object):
                 captures = self.regexec(regex, source)
                 if captures:
                     raw_token, source = captures
-                    if _type == 'color':
-                        style = getattr(Token, ANSI_COLORS[raw_token[-7:-3]])
-                        break
-                    elif _type == 'venv' and not os.getenv('VIRTUAL_ENV'):
+                    if _type == 'venv' and not os.getenv('VIRTUAL_ENV'):
                         _type = 'string'
-                    elif _type == 'nocolor':
-                        break
-                    yield (style, getattr(self, _type, lambda t: t)(raw_token))
+                    yield getattr(self, _type, lambda t: t)(raw_token)
                     break
             else:
                 break
+
+    def render(self, source):
+        source = ''.join(self.tokenize(source))
+        source = source.replace('\\e', '\x1b')
+        source = source.replace('\\[', '')
+        source = source.replace('\\]', '')
+        return source

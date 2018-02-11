@@ -59,7 +59,7 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/settings.json`
  - VI_MODE - enable VI mode
  - VI_EDIT_MODE - set VI edit mode prompt string
  - VI_NORMAL_MODE - set VI normal mode prompt string
- - PARSE_PS1 {experimental} - will try to adgust ptrepl PS1 according to your PS1 setting
+ - PARSE_PS1 {experimental} - will try to adgust ptrepl's prompt according to your PS1 setting
 
 ### Default settings
 ```json

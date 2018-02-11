@@ -7,7 +7,7 @@ from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
 from .completion import BashCompleter
-from .prompt import style, get_prompt_tokens
+from .prompt import get_prompt_tokens
 from .settings import settings
 from .history import get_history
 from .utils import get_xdg_json_data
@@ -33,13 +33,12 @@ def main(command, **kwargs):
                 history=history,
                 complete_while_typing=False,
                 vi_mode=settings.VI_MODE,
-                style=style,
                 auto_suggest=AutoSuggestFromHistory()
             )
             subcommand = application.prompt()
             if subcommand.strip() == '!!':
-                subcommand = application.buffer.history.strings[-2]
-                application.buffer.history.strings[-1] = subcommand
+                subcommand = application.default_buffer.history.strings[-2]
+                application.default_buffer.history.strings[-1] = subcommand
             subcommand = completer.get_real_subcommand(subcommand)
             if subcommand is None:
                 break
