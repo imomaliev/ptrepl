@@ -32,8 +32,11 @@ def main(command, **kwargs):
                 completer=completer,
                 history=history,
                 complete_while_typing=False,
+                enable_system_prompt=True,
+                enable_suspend=True,
                 vi_mode=settings.VI_MODE,
-                auto_suggest=AutoSuggestFromHistory()
+                auto_suggest=AutoSuggestFromHistory(),
+                enable_history_search=True
             )
             subcommand = application.prompt()
             if subcommand.strip() == '!!':
@@ -42,10 +45,8 @@ def main(command, **kwargs):
             subcommand = completer.get_real_subcommand(subcommand)
             if subcommand is None:
                 break
-            if subcommand and subcommand[0] == settings.BASH_EXEC:
-                call_command = subcommand[1:]
-            else:
-                call_command = ' '.join([command, subcommand])
+
+            call_command = ' '.join([command, subcommand])
             if call_command in aliases:
                 call_command = aliases[call_command]
             subprocess.call(call_command, shell=True)

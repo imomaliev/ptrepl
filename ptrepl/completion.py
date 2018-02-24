@@ -17,13 +17,8 @@ class BashCompleter(Completer):
         word = document.get_word_before_cursor(WORD=True)
         if not subcommand:
             return
-        if subcommand[0] == settings.BASH_EXEC:
-            line = subcommand[1:]
-        else:
-            line = ' '.join([command, subcommand])
+        line = ' '.join([command, subcommand])
         start_position = -len(word)
-        if subcommand == word and word[0] == settings.BASH_EXEC:
-            start_position += 1
         split = line.split()
         if len(split) > 1 and not line.endswith(' '):
             prefix = split[-1]

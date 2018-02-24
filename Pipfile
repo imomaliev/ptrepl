@@ -9,11 +9,10 @@ name = "pypi"
 
 pygments = "*"
 click = "*"
-
-[packages.prompt_toolkit]
-git = "https://github.com/jonathanslenders/python-prompt-toolkit.git@2.0"
+prompt-toolkit = { git = "https://github.com/jonathanslenders/python-prompt-toolkit.git@2.0" }
 
 
 [dev-packages]
 
 neovim = "*"
+pylint = "*"

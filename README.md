@@ -54,7 +54,6 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/settings.json`
 ```
 ### Available settings
  - EXIT_COMMAND - change exit command
- - BASH_EXEC - change prefix symbol for executing other bash commands 
  - PREPEND_SPACE - prepend space before prompt command
  - VI_MODE - enable VI mode
  - VI_EDIT_MODE - set VI edit mode prompt string
@@ -65,7 +64,6 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/settings.json`
 ```json
 {
   "EXIT_COMMAND": "exit",
-  "BASH_EXEC": "$",
   "PREPEND_SPACE": false,
   "VI_MODE": false,
   "VI_EDIT_MODE": ":",

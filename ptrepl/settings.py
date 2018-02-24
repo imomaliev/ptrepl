@@ -3,7 +3,6 @@ from .utils import get_xdg_json_data
 
 DEFAULTS = {
     "EXIT_COMMAND": "exit",
-    "BASH_EXEC": "$",
     "VI_MODE": False,
     "PREPEND_SPACE": False,
     "VI_EDIT_MODE": ":",
