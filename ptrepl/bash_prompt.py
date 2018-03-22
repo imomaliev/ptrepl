@@ -69,7 +69,6 @@ regexes = OrderedDict((
     ('cwd', re.compile(r'^\\w')),
     ('cmd', re.compile(r'^\$\([^\)]*\)')),
     ('array', re.compile(r'^\$\{[^\}]*\}')),
-    ('venv', re.compile(r'^\([^\)]*\)')),
     ('datetime', re.compile(r'^\\D\{[^\}]*\}')),
     ('newline', re.compile(r'^\\n')),
     ('user', re.compile(r'^\\u')),
@@ -108,27 +107,16 @@ class Lexer(object):
         else:
             return ''
 
-    def _get_dotfiles(self):
-        if os.path.exists('.dotfiles'):
-            return '{{{}}} '.format(os.path.basename(os.getcwd()))
-        else:
-            return ''
-
     def cmd(self, raw_token, is_script=True):
         if '__git_ps1' in raw_token:
             return self._get_git_branch()
         if '__hg_ps1' in raw_token:
             return self._get_hg_branch()
-        if '__dotfiles_ps1' in raw_token:
-            return self._get_dotfiles()
         cmd = 'echo "{}"'.format(raw_token) if is_script else raw_token
         return subprocess.check_output(
             ['bash', '-c', cmd], universal_newlines=True,
             stderr=subprocess.PIPE
         ).strip('\n')
-
-    def venv(self, raw_token):
-        return raw_token
 
     def datetime(self, raw_token):
         return datetime.datetime.now().strftime(raw_token[3:-1])
@@ -158,8 +146,6 @@ class Lexer(object):
                 captures = self.regexec(regex, source)
                 if captures:
                     raw_token, source = captures
-                    if _type == 'venv' and not os.getenv('VIRTUAL_ENV'):
-                        _type = 'string'
                     yield getattr(self, _type, lambda t: t)(raw_token)
                     break
             else:
