@@ -107,16 +107,34 @@ class Lexer(object):
         else:
             return ''
 
+    def _get_dotfiles(self):
+        if os.path.exists('.dotfiles'):
+            return '{{{}}} '.format(os.path.basename(os.getcwd()))
+        else:
+            return ''
+
     def cmd(self, raw_token, is_script=True):
         if '__git_ps1' in raw_token:
             return self._get_git_branch()
         if '__hg_ps1' in raw_token:
             return self._get_hg_branch()
+        if '__venv_ps1' in raw_token:
+            return self._get_venv()
+        if '__dotfiles_ps1' in raw_token:
+            return self._get_dotfiles()
         cmd = 'echo "{}"'.format(raw_token) if is_script else raw_token
         return subprocess.check_output(
             ['bash', '-c', cmd], universal_newlines=True,
             stderr=subprocess.PIPE
         ).strip('\n')
+
+    def _get_venv(self):
+        venv = os.getenv('VIRTUAL_ENV') or ''
+        venv = os.getcwd() if venv.endswith('.venv') else venv
+        if venv:
+            return '({}) '.format(os.path.basename(venv))
+        else:
+            return ''
 
     def datetime(self, raw_token):
         return datetime.datetime.now().strftime(raw_token[3:-1])
