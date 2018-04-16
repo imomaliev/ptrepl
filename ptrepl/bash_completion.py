@@ -2,6 +2,8 @@
 from bash.
 """
 # developer note: this file should not perform any action on import.
+#                 This file comes from https://github.com/xonsh/py-bash-completion
+#                 and should be edited there!
 import os
 import re
 import sys
@@ -9,11 +11,13 @@ import shlex
 import shutil
 import pathlib
 import platform
+import functools
 import subprocess
 
 __version__ = '0.1.0'
 
 
+@functools.lru_cache(1)
 def _git_for_windows_path():
     """Returns the path to git for windows, if available and None otherwise."""
     import winreg
@@ -26,25 +30,32 @@ def _git_for_windows_path():
     return gfwp
 
 
+@functools.lru_cache(1)
 def _windows_bash_command(env=None):
     """Determines the command for Bash on windows."""
     wbc = 'bash'
     path = None if env is None else env.get('PATH', None)
     bash_on_path = shutil.which('bash', path=path)
     if bash_on_path:
-        # Check if Bash is from the "Windows Subsystem for Linux" (WSL)
-        # which can't be used by xonsh foreign-shell/completer
-        out = subprocess.check_output([bash_on_path, '--version'],
-                                      stderr=subprocess.PIPE,
-                                      universal_newlines=True)
-        if 'pc-linux-gnu' in out.splitlines()[0]:
+        try:
+            out = subprocess.check_output([bash_on_path, '--version'],
+                                          stderr=subprocess.PIPE,
+                                          universal_newlines=True)
+        except subprocess.CalledProcessError:
+            bash_works = False
+        else:
+            # Check if Bash is from the "Windows Subsystem for Linux" (WSL)
+            # which can't be used by xonsh foreign-shell/completer
+            bash_works = out and 'pc-linux-gnu' not in out.splitlines()[0]
+
+        if bash_works:
+            wbc = bash_on_path
+        else:
             gfwp = _git_for_windows_path()
             if gfwp:
                 bashcmd = os.path.join(gfwp, 'bin\\bash.exe')
                 if os.path.isfile(bashcmd):
                     wbc = bashcmd
-        else:
-            wbc = bash_on_path
     return wbc
 
 
@@ -228,7 +239,18 @@ COMP_COUNT={end}
 COMP_CWORD={n}
 $_func {cmd} {prefix} {prev}
 
-for ((i=0;i<${{#COMPREPLY[*]}};i++)) do echo ${{COMPREPLY[i]}}; done
+# print out completions, right-stripped if they contain no internal spaces
+shopt -s extglob
+for ((i=0;i<${{#COMPREPLY[*]}};i++))
+do
+    no_spaces="${{COMPREPLY[i]//[[:space:]]}}"
+    no_trailing_spaces="${{COMPREPLY[i]%%+([[:space:]])}}"
+    if [[ "$no_spaces" == "$no_trailing_spaces" ]]; then
+        echo "$no_trailing_spaces"
+    else
+        echo "${{COMPREPLY[i]}}"
+    fi
+done
 """
 
 
@@ -247,7 +269,7 @@ def bash_completions(prefix, line, begidx, endidx, env=None, paths=None,
     endidx : int
         The index in line that prefix ends on.
     env : Mapping, optional
-        The environment dict to execute the Bash suprocess in.
+        The environment dict to execute the Bash subprocess in.
     paths : list or tuple of str or None, optional
         This is a list (or tuple) of strings that specifies where the
         ``bash_completion`` script may be found. The first valid path will
@@ -265,8 +287,8 @@ def bash_completions(prefix, line, begidx, endidx, env=None, paths=None,
 
     Returns
     -------
-    rtn : list of str
-        Possible completions of prefix, sorted alphabetically.
+    rtn : set of str
+        Possible completions of prefix
     lprefix : int
         Length of the prefix to be replaced in the completion.
     """
@@ -304,8 +326,10 @@ def bash_completions(prefix, line, begidx, endidx, env=None, paths=None,
         out = subprocess.check_output(
             [command, '-c', script], universal_newlines=True,
             stderr=subprocess.PIPE, env=env)
+        if not out:
+            raise ValueError
     except (subprocess.CalledProcessError, FileNotFoundError,
-            UnicodeDecodeError):
+            UnicodeDecodeError, ValueError):
         return set(), 0
 
     out = out.splitlines()
@@ -329,3 +353,60 @@ def bash_completions(prefix, line, begidx, endidx, env=None, paths=None,
         out = set([x.rstrip() for x in out])
 
     return out, len(prefix) - strip_len
+
+
+def bash_complete_line(line, return_line=True, **kwargs):
+    """Provides the completion from the end of the line.
+
+    Parameters
+    ----------
+    line : str
+        Line to complete
+    return_line : bool, optional
+        If true (default), will return the entire line, with the completion added.
+        If false, this will instead return the strings to append to the original line.
+    kwargs : optional
+        All other keyword arguments are passed to the bash_completions() function.
+
+    Returns
+    -------
+    rtn : set of str
+        Possible completions of prefix
+    """
+    # set up for completing from the end of the line
+    split = line.split()
+    if len(split) > 1 and not line.endswith(' '):
+        prefix = split[-1]
+        begidx = len(line.rsplit(prefix)[0])
+    else:
+        prefix = ''
+        begidx = len(line)
+    endidx = len(line)
+    # get completions
+    out, lprefix = bash_completions(prefix, line, begidx, endidx, **kwargs)
+    # reformat output
+    if return_line:
+        preline = line[:-lprefix]
+        rtn = {preline + o for o in out}
+    else:
+        rtn = {o[lprefix:] for o in out}
+    return rtn
+
+
+def _bc_main(args=None):
+    """Runs complete_line() and prints the output."""
+    from argparse import ArgumentParser
+    p = ArgumentParser('bash_completions')
+    p.add_argument('--return-line', action='store_true', dest='return_line', default=True,
+                   help='will return the entire line, with the completion added')
+    p.add_argument('--no-return-line', action='store_false', dest='return_line',
+                   help='will instead return the strings to append to the original line')
+    p.add_argument('line', help='line to complete')
+    ns = p.parse_args(args=args)
+    out = bash_complete_line(ns.line, return_line=ns.return_line)
+    for o in sorted(out):
+        print(o)
+
+
+if __name__ == '__main__':
+    _bc_main()
