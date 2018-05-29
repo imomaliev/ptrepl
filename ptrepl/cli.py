@@ -2,7 +2,7 @@ import subprocess
 
 import click
 
-from prompt_toolkit.shortcuts import Prompt
+from prompt_toolkit.shortcuts import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
@@ -27,7 +27,7 @@ def main(command, **kwargs):
         try:
             _get_prompt_tokens = get_prompt_tokens(prompt_str)
 
-            application = Prompt(
+            application = PromptSession(
                 _get_prompt_tokens,
                 completer=completer,
                 history=history,
