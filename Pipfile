@@ -9,7 +9,7 @@ name = "pypi"
 
 pygments = "*"
 click = "*"
-prompt-toolkit = { git = "https://github.com/jonathanslenders/python-prompt-toolkit.git@2.0" }
+prompt-toolkit = "==2.0.2"
 
 
 [dev-packages]

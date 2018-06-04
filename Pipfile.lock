@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "245d018f252433f0468bb2d3b9495a47519e5ed449a7c509e17f625b2864656f"
+            "sha256": "9c1b8811d9fc1ecc11c31c46578eba0e00b0cf3312a454f37c74edba68b30498"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -23,7 +23,13 @@
             "version": "==6.7"
         },
         "prompt-toolkit": {
-            "git": "https://github.com/jonathanslenders/python-prompt-toolkit.git@2.0"
+            "hashes": [
+                "sha256:33cd9b986f1732f720666d6b412f1cb071a92743c5a61cfc3f39dee39248241b",
+                "sha256:3e87a08d1acd179d2ddf0e0670437da03b88df8c8033d0843ad03cf7e69f1322",
+                "sha256:a9f562872fa339f012c29d1fd141b5ea7bebc948b2987d3c1b70f6ed47c8478e"
+            ],
+            "index": "pypi",
+            "version": "==2.0.2"
         },
         "pygments": {
             "hashes": [
@@ -32,6 +38,20 @@
             ],
             "index": "pypi",
             "version": "==2.2.0"
+        },
+        "six": {
+            "hashes": [
+                "sha256:70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9",
+                "sha256:832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb"
+            ],
+            "version": "==1.11.0"
+        },
+        "wcwidth": {
+            "hashes": [
+                "sha256:3df37372226d6e63e1b1e1eda15c594bca98a22d33a23832a90998faa96bc65e",
+                "sha256:f4ebe71925af7b40a864553f761ed559b43544f8f71746c2d756c7fe788ade7c"
+            ],
+            "version": "==0.1.7"
         }
     },
     "develop": {

@@ -16,7 +16,7 @@ def read(fname):
 
 setup(
     name='ptrepl',
-    version='0.4.4',
+    version='0.4.5',
     description='Run command as REPL-environment',
     long_description=read('README.md'),
     author='Sardorbek Imomaliev',
@@ -24,13 +24,9 @@ setup(
     license='MIT',
     packages=find_packages(exclude=['tests']),
     install_requires=[
-        'prompt_toolkit==2.0.0',
+        'prompt_toolkit==2.0.2',
         'click',
         'pygments',
-    ],
-    # https://stackoverflow.com/a/3481388/3627387
-    dependency_links=[
-        'git+https://github.com/jonathanslenders/python-prompt-toolkit.git@2.0#egg=prompt_toolkit-2.0.0',
     ],
     entry_points={
         'console_scripts': [
@@ -38,7 +34,6 @@ setup(
         ],
     },
     classifiers=[
-        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
     ]
 )

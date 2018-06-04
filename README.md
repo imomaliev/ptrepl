@@ -10,7 +10,7 @@ Make REPL out of any bash command
 ## Installation
 Requires `python3` and `prompt_toolkit==2.0.0`
 ```bash
-pip install --process-dependency-links git+https://github.com/imomaliev/ptrepl.git
+pip install git+https://github.com/imomaliev/ptrepl.git
 ```
 
 ## Usage
