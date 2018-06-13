@@ -40,8 +40,8 @@ def main(command, **kwargs):
             )
             subcommand = application.prompt()
             if subcommand.strip() == '!!':
-                subcommand = application.default_buffer.history.strings[-2]
-                application.default_buffer.history.strings[-1] = subcommand
+                subcommand = application.default_buffer.history.get_strings()[-2]
+                application.default_buffer.history.get_strings()[-1] = subcommand
             subcommand = completer.get_real_subcommand(subcommand)
             if subcommand is None:
                 break
