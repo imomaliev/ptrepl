@@ -23,22 +23,22 @@ def main(command, **kwargs):
 
     prompt_str = kwargs.get('prompt') or command
 
+    application = PromptSession(
+        '',
+        completer=completer,
+        history=history,
+        complete_while_typing=False,
+        enable_system_prompt=True,
+        enable_suspend=True,
+        vi_mode=settings.VI_MODE,
+        auto_suggest=AutoSuggestFromHistory(),
+        enable_history_search=True
+    )
+
     while True:
         try:
             _get_prompt_tokens = get_prompt_tokens(prompt_str)
-
-            application = PromptSession(
-                _get_prompt_tokens,
-                completer=completer,
-                history=history,
-                complete_while_typing=False,
-                enable_system_prompt=True,
-                enable_suspend=True,
-                vi_mode=settings.VI_MODE,
-                auto_suggest=AutoSuggestFromHistory(),
-                enable_history_search=True
-            )
-            subcommand = application.prompt()
+            subcommand = application.prompt(_get_prompt_tokens)
             if subcommand.strip() == '!!':
                 subcommand = application.default_buffer.history.get_strings()[-2]
                 application.default_buffer.history.get_strings()[-1] = subcommand
