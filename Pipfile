@@ -1,6 +1,6 @@
 [[source]]
 
-url = "https://pypi.python.org/simple"
+url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
@@ -9,7 +9,7 @@ name = "pypi"
 
 pygments = "*"
 click = "*"
-prompt-toolkit = "==2.0.2"
+prompt-toolkit = "==2.0.5"
 
 
 [dev-packages]
