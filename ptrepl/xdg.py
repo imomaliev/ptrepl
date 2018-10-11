@@ -31,7 +31,7 @@ set.
 
 # https://github.com/srstevenson/xdg
 
-__version__ = '0.3.2'
+__version__ = '3.0.2'
 
 import os
 

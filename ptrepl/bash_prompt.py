@@ -107,8 +107,8 @@ class Lexer(object):
         else:
             return ''
 
-    def _get_dotfiles(self):
-        if os.path.exists('.dotfiles'):
+    def _get_direnv(self):
+        if os.path.exists('.direnv'):
             return '{{{}}} '.format(os.path.basename(os.getcwd()))
         else:
             return ''
@@ -121,7 +121,7 @@ class Lexer(object):
         if '__venv_ps1' in raw_token:
             return self._get_venv()
         if '__dotfiles_ps1' in raw_token:
-            return self._get_dotfiles()
+            return self._get_direnv()
         cmd = 'echo "{}"'.format(raw_token) if is_script else raw_token
         return subprocess.check_output(
             ['bash', '-c', cmd], universal_newlines=True,
