@@ -16,24 +16,14 @@ def read(fname):
 
 setup(
     name='ptrepl',
-    version='0.4.8',
+    version='0.5.0',
     description='Run command as REPL-environment',
     long_description=read('README.md'),
     author='Sardorbek Imomaliev',
     url='https://github.com/imomaliev/ptrepl',
     license='MIT',
     packages=find_packages(exclude=['tests']),
-    install_requires=[
-        'prompt_toolkit==2.0.5',
-        'click',
-        'pygments',
-    ],
-    entry_points={
-        'console_scripts': [
-            'ptrepl = ptrepl.cli:main',
-        ],
-    },
-    classifiers=[
-        'Programming Language :: Python :: 3',
-    ]
+    install_requires=['prompt_toolkit==2.0.7', 'click', 'pygments'],
+    entry_points={'console_scripts': ['ptrepl = ptrepl.cli:main']},
+    classifiers=['Programming Language :: Python :: 3'],
 )

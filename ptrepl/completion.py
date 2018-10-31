@@ -33,7 +33,10 @@ class BashCompleter(Completer):
         if len(split) == 2:
             for a in self.aliases:
                 if a.startswith('{} {}'.format(command, prefix)):
-                    yield Completion(a.replace('{} '.format(command), ''), start_position=start_position)
+                    yield Completion(
+                        a.replace('{} '.format(command), ''),
+                        start_position=start_position,
+                    )
 
     def get_real_subcommand(self, subcommand):
         """

@@ -7,14 +7,16 @@ DEFAULTS = {
     "PREPEND_SPACE": False,
     "VI_EDIT_MODE": ":",
     "VI_NORMAL_MODE": "+",
-    "PARSE_PS1": False  # experimental
+    "PARSE_PS1": False,  # experimental
+    "LOCAL_SHADA": False,
+    "LOCAL_SHADA_PATH": ".direnv/ptrepl/",
 }
 
 
 USER_SETTINGS = get_xdg_json_data('settings.json')
 
 
-class Settings(object):
+class Settings:
     """
     A settings object, that allows settings to be accessed as properties.
     For example:
@@ -22,13 +24,14 @@ class Settings(object):
         from .settings import settings
         print settings.EXIT_COMMAND
     """
+
     def __init__(self, user_settings=None, defaults=None):
         self.user_settings = user_settings or {}
         self.defaults = defaults or {}
 
     def __getattr__(self, attr):
         if attr not in self.defaults.keys():
-            raise AttributeError("Invalid API setting: '%s'" % attr)
+            raise AttributeError("Invalid setting: '%s'" % attr)
 
         try:
             # Check if present in user settings
@@ -40,5 +43,6 @@ class Settings(object):
         # Cache the result
         setattr(self, attr, val)
         return val
+
 
 settings = Settings(USER_SETTINGS, DEFAULTS)

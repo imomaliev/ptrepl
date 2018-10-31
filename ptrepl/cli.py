@@ -23,7 +23,7 @@ def main(command, **kwargs):
 
     prompt_str = kwargs.get('prompt') or command
 
-    application = PromptSession(
+    session = PromptSession(
         '',
         completer=completer,
         history=history,
@@ -32,16 +32,16 @@ def main(command, **kwargs):
         enable_suspend=True,
         vi_mode=settings.VI_MODE,
         auto_suggest=AutoSuggestFromHistory(),
-        enable_history_search=True
+        enable_history_search=True,
     )
 
     while True:
         try:
             _get_prompt_tokens = get_prompt_tokens(prompt_str)
-            subcommand = application.prompt(_get_prompt_tokens)
+            subcommand = session.prompt(_get_prompt_tokens)
             if subcommand.strip() == '!!':
-                subcommand = application.default_buffer.history.get_strings()[-2]
-                application.default_buffer.history.get_strings()[-1] = subcommand
+                subcommand = session.default_buffer.history.get_strings()[-2]
+                session.default_buffer.history.get_strings()[-1] = subcommand
             subcommand = completer.get_real_subcommand(subcommand)
             if subcommand is None:
                 break
@@ -54,4 +54,4 @@ def main(command, **kwargs):
             break  # Control-D pressed.
         except KeyboardInterrupt:
             pass
-    print('GoodBye!')
+    click.echo('GoodBye!')

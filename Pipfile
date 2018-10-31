@@ -1,18 +1,13 @@
 [[source]]
-
 url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 pygments = "*"
 click = "*"
-prompt-toolkit = "==2.0.5"
-
+prompt-toolkit = "==2.0.7"
 
 [dev-packages]
-
 pylint = "*"
 pycodestyle = "*"

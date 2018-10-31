@@ -8,7 +8,7 @@ Make REPL out of any bash command
  - stores history in XDG_DATA_HOME/ptrepl/history
 
 ## Installation
-Requires `python3` and `prompt_toolkit==2.0.0`
+Requires `python3` and `prompt_toolkit>2.0.7`
 ```bash
 pip install git+https://github.com/imomaliev/ptrepl.git
 ```
@@ -49,7 +49,8 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/settings.json`
 ```json
 {
   "PARSE_PS1": true,
-  "VI_MODE": true
+  "VI_MODE": true,
+  "LOCAL_SHADA": true
 }
 ```
 ### Available settings
@@ -59,6 +60,8 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/settings.json`
  - VI_EDIT_MODE - set VI edit mode prompt string
  - VI_NORMAL_MODE - set VI normal mode prompt string
  - PARSE_PS1 {experimental} - will try to adgust ptrepl's prompt according to your PS1 setting
+ - LOCAL_SHADA - store shada(history) in LOCAL_SHADA_PATH
+ - LOCAL_SHADA_PATH - path to local shada
 
 ### Default settings
 ```json
@@ -68,7 +71,9 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/settings.json`
   "VI_MODE": false,
   "VI_EDIT_MODE": ":",
   "VI_NORMAL_MODE": "+",
-  "PARSE_PS1": false
+  "PARSE_PS1": false,
+  "LOCAL_SHADA": false,
+  "LOCAL_SHADA_PATH": ".direnv/ptrepl/",
 }
 ```
 
