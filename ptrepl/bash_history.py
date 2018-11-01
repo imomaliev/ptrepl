@@ -86,6 +86,10 @@ g Cause changes to be applied over the entire event line. Used in conjunction wi
 import re
 
 
+class BashHistoryIndexError(IndexError):
+    pass
+
+
 def expand_history(command, history):
     history_num = re.compile(r'(?<!\\)!-?\d+')
     res = history_num.search(command)
@@ -94,9 +98,15 @@ def expand_history(command, history):
         history_index = int(match[1:])
         if history_index < 0:
             history_index -= 1
-        history_command = history[history_index]
+        try:
+            history_command = history[history_index]
+        except IndexError:
+            raise BashHistoryIndexError(match)
         span = res.span()
         command = command[: span[0]] + history_command + command[span[1] :]
         res = history_num.search(command)
-    command = command.replace('!!', history[-2])
+    try:
+        command = command.replace('!!', history[-2])
+    except IndexError:
+        raise BashHistoryIndexError(match)
     return command

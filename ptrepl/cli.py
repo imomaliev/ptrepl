@@ -6,7 +6,7 @@ from prompt_toolkit.shortcuts import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
-from .bash_history import expand_history
+from .bash_history import expand_history, BashHistoryIndexError
 from .completion import BashCompleter
 from .prompt import get_prompt_tokens
 from .settings import settings
@@ -44,8 +44,12 @@ def main(command, **kwargs):
                 subcommand = expand_history(
                     subcommand, session.default_buffer.history.get_strings()
                 )
-            except IndexError:
-                click.echo('event not found')
+            except BashHistoryIndexError as e:
+                click.echo(
+                    '{command}: {event}: event not found'.format(
+                        command=command, event=e
+                    )
+                )
                 continue
             session.default_buffer.history.get_strings()[-1] = subcommand
             subcommand = completer.get_real_subcommand(subcommand)
