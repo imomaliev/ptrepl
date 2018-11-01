@@ -87,7 +87,7 @@ import re
 
 
 def expand_history(command, history):
-    history_num = re.compile(r'!-?\d')
+    history_num = re.compile(r'(?<!\\)!-?\d+')
     res = history_num.search(command)
     while res is not None:
         match = res.group(0)
@@ -95,7 +95,8 @@ def expand_history(command, history):
         if history_index < 0:
             history_index -= 1
         history_command = history[history_index]
-        command = command.replace(match, history_command)
+        span = res.span()
+        command = command[: span[0]] + history_command + command[span[1] :]
         res = history_num.search(command)
     command = command.replace('!!', history[-2])
     return command

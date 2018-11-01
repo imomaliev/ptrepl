@@ -40,9 +40,13 @@ def main(command, **kwargs):
         try:
             _get_prompt_tokens = get_prompt_tokens(prompt_str)
             subcommand = session.prompt(_get_prompt_tokens)
-            subcommand = expand_history(
-                subcommand, session.default_buffer.history.get_strings()
-            )
+            try:
+                subcommand = expand_history(
+                    subcommand, session.default_buffer.history.get_strings()
+                )
+            except IndexError:
+                click.echo('event not found')
+                continue
             session.default_buffer.history.get_strings()[-1] = subcommand
             subcommand = completer.get_real_subcommand(subcommand)
             if subcommand is None:
