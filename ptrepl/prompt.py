@@ -50,6 +50,7 @@ from prompt_toolkit.widgets.toolbars import (
 )
 
 from .bash_prompt import Lexer
+from .toolbars import CommandToolbar
 from .settings import settings
 
 
@@ -80,7 +81,7 @@ def get_prompt_tokens(command):
     return _get_prompt_tokens
 
 
-class PtrerplSession(PromptSession):
+class PtreplSession(PromptSession):
     def _create_layout(self):
         """
         Create `Layout` for this prompt.
@@ -119,7 +120,7 @@ class PtrerplSession(PromptSession):
                 dont_extend_height=True,
                 height=Dimension(min=1),
             ),
-            filter=~is_done
+            ~is_done
             & renderer_height_is_known
             & Condition(lambda: self.bottom_toolbar is not None),
         )
@@ -137,6 +138,8 @@ class PtrerplSession(PromptSession):
         system_toolbar = SystemToolbar(
             enable_global_bindings=dyncond('enable_system_prompt')
         )
+
+        command_toolbar = CommandToolbar(enable_global_bindings=True)
 
         def get_search_buffer_control():
             " Return the UIControl to be focused when searching start. "
@@ -227,10 +230,11 @@ class PtrerplSession(PromptSession):
                         ),
                     ],
                 ),
-                ConditionalContainer(ValidationToolbar(), filter=~is_done),
+                ConditionalContainer(ValidationToolbar(), ~is_done),
                 ConditionalContainer(
                     system_toolbar, dyncond('enable_system_prompt') & ~is_done
                 ),
+                ConditionalContainer(command_toolbar, ~is_done),
                 # In multiline mode, we use two toolbars for 'arg' and 'search'.
                 ConditionalContainer(
                     Window(FormattedTextControl(self._get_arg_text), height=1),

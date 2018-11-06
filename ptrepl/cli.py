@@ -7,7 +7,7 @@ from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
 from .bash_history import expand_history, BashHistoryIndexError
 from .completion import BashCompleter
-from .prompt import get_prompt_tokens, PtrerplSession
+from .prompt import get_prompt_tokens, PtreplSession
 from .settings import settings
 from .history import get_history
 from .utils import get_xdg_json_data
@@ -23,7 +23,7 @@ def main(command, **kwargs):
 
     prompt_str = kwargs.get('prompt') or command
 
-    session = PtrerplSession(
+    session = PtreplSession(
         '',
         completer=completer,
         history=history,
