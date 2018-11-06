@@ -6,6 +6,9 @@ Make REPL out of any bash command
  - has vi mode
  - has PS1 parsing(experimental)
  - stores history in XDG_DATA_HOME/ptrepl/history
+ - bash like history expansion
+ - list history
+ - command mode
 
 ## Installation
 Requires `python3` and `prompt_toolkit>2.0.7`
@@ -26,8 +29,7 @@ $ ptrepl git
 git $
 # to call "git status"
 git $ status
-# if you need execute some other bash command prepend it with '$'
-git $ $echo 123
+# if you need execute some other bash command see system mode below
 ```
 
 ### Custom prompt command
@@ -77,6 +79,8 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/settings.json`
 }
 ```
 
+## Features
+
 ### Parsing PS1
 Here is how my bash prompt(PS1) looks like by default
 ```bash
@@ -84,6 +88,47 @@ Here is how my bash prompt(PS1) looks like by default
 + ❯ ptrepl git
  {ptrepl} ~/Development/Python/ptrepl [master] |19:20:15 07-Feb-18|
 + git ❯
+```
+### Completion
+```bash
+$ ptrepl git
+git $ st (press TAB)
+# result
+git $ st
+          status
+          stage
+          stash
+```
+
+### System mode
+```bash
+$ ptrepl git
+git $ (press Escape + !)
+# result
+# you could enter your shell commands here
+Shell command: ls
+```
+
+### Command mode
+```bash
+$ ptrepl git
+git $ (press Escape + :)
+# result
+# you could enter your command mode commands here
+# to list history
+Command mode: history
+```
+
+### Bash like history expansion
+```bash
+$ ptrepl git
+git $ status
+# repeat last command
+git $ !!
+# repeat 10th command
+git $ !10
+# repeat 10th command from bottom of history stack
+git $ !-10
 ```
 
 ## Similar projects

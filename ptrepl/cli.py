@@ -2,12 +2,12 @@ import subprocess
 
 import click
 
-from prompt_toolkit.shortcuts import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
+from .bash_history import expand_history, BashHistoryIndexError
 from .completion import BashCompleter
-from .prompt import get_prompt_tokens
+from .prompt import get_prompt_tokens, PtreplSession
 from .settings import settings
 from .history import get_history
 from .utils import get_xdg_json_data
@@ -23,7 +23,7 @@ def main(command, **kwargs):
 
     prompt_str = kwargs.get('prompt') or command
 
-    session = PromptSession(
+    session = PtreplSession(
         '',
         completer=completer,
         history=history,
@@ -39,9 +39,21 @@ def main(command, **kwargs):
         try:
             _get_prompt_tokens = get_prompt_tokens(prompt_str)
             subcommand = session.prompt(_get_prompt_tokens)
-            if subcommand.strip() == '!!':
-                subcommand = session.default_buffer.history.get_strings()[-2]
-                session.default_buffer.history.get_strings()[-1] = subcommand
+            try:
+                subcommand, execute = expand_history(
+                    subcommand, session.default_buffer.history.get_strings()
+                )
+            except BashHistoryIndexError as e:
+                click.echo(
+                    '{command}: {event}: event not found'.format(
+                        command=command, event=e
+                    )
+                )
+                continue
+            if not execute:
+                click.echo(subcommand)
+                continue
+            session.default_buffer.history.get_strings()[-1] = subcommand
             subcommand = completer.get_real_subcommand(subcommand)
             if subcommand is None:
                 break
