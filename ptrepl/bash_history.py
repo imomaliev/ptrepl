@@ -108,5 +108,5 @@ def expand_history(command, history):
     try:
         command = command.replace('!!', history[-2])
     except IndexError:
-        raise BashHistoryIndexError(match)
+        raise BashHistoryIndexError()
     return command, True
