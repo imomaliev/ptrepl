@@ -2,13 +2,12 @@ import subprocess
 
 import click
 
-from prompt_toolkit.shortcuts import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
 from .bash_history import expand_history, BashHistoryIndexError
 from .completion import BashCompleter
-from .prompt import get_prompt_tokens
+from .prompt import get_prompt_tokens, PtrerplSession
 from .settings import settings
 from .history import get_history
 from .utils import get_xdg_json_data
@@ -24,7 +23,7 @@ def main(command, **kwargs):
 
     prompt_str = kwargs.get('prompt') or command
 
-    session = PromptSession(
+    session = PtrerplSession(
         '',
         completer=completer,
         history=history,
