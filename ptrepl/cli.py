@@ -41,7 +41,7 @@ def main(command, **kwargs):
             _get_prompt_tokens = get_prompt_tokens(prompt_str)
             subcommand = session.prompt(_get_prompt_tokens)
             try:
-                subcommand = expand_history(
+                subcommand, execute = expand_history(
                     subcommand, session.default_buffer.history.get_strings()
                 )
             except BashHistoryIndexError as e:
@@ -50,6 +50,9 @@ def main(command, **kwargs):
                         command=command, event=e
                     )
                 )
+                continue
+            if not execute:
+                click.echo(subcommand)
                 continue
             session.default_buffer.history.get_strings()[-1] = subcommand
             subcommand = completer.get_real_subcommand(subcommand)
