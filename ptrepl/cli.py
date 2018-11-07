@@ -9,7 +9,7 @@ from .bash_history import expand_history, BashHistoryIndexError
 from .completion import BashCompleter
 from .prompt import get_prompt_tokens, PtreplSession
 from .settings import settings
-from .history import get_history
+from .history import get_history_file
 from .utils import get_xdg_json_data
 
 
@@ -17,7 +17,7 @@ from .utils import get_xdg_json_data
 @click.argument('command')
 @click.option('--prompt', help='Override prompt')
 def main(command, **kwargs):
-    history = FileHistory(get_history(command))
+    history = FileHistory(get_history_file(command))
     aliases = get_xdg_json_data('aliases.json')
     completer = BashCompleter(command, aliases)
 
@@ -58,7 +58,7 @@ def main(command, **kwargs):
             if subcommand is None:
                 break
 
-            call_command = ' '.join([command, subcommand])
+            call_command = '{} {}'.format(command, subcommand)
             if call_command in aliases:
                 call_command = aliases[call_command]
             subprocess.call(call_command, shell=True)

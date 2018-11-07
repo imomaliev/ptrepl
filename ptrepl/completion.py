@@ -17,7 +17,7 @@ class BashCompleter(Completer):
         word = document.get_word_before_cursor(WORD=True)
         if not subcommand:
             return
-        line = ' '.join([command, subcommand])
+        line = '{} {}'.format(command, subcommand)
         start_position = -len(word)
         split = line.split()
         if len(split) > 1 and not line.endswith(' '):

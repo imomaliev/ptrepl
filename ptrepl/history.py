@@ -5,7 +5,7 @@ from .xdg import XDG_DATA_HOME
 from .settings import settings
 
 
-def get_history(command):
+def get_history_file(command):
     command = command.replace(' ', '').replace('/', '')
     if settings.LOCAL_SHADA:
         history = Path(settings.LOCAL_SHADA_PATH, 'history/{}'.format(command))

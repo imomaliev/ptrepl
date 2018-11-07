@@ -71,11 +71,11 @@ def get_prompt_tokens(command):
             in_insert_mode = app.vi_state.input_mode == InputMode.INSERT
             mode = settings.VI_NORMAL_MODE if in_insert_mode else settings.VI_EDIT_MODE
             mode = '{} '.format(mode)
-            last_line = ''.join((mode, _command, last_line))
+            last_line = '{}{}{}'.format(mode, _command, last_line)
         else:
-            last_line = ''.join((_command, last_line))
+            last_line = '{}{}'.format(_command, last_line)
 
-        _prompt = '\n'.join((_prompt, last_line))
+        _prompt = '{}\n{}'.format(_prompt, last_line)
         return ANSI(_prompt)
 
     return _get_prompt_tokens
