@@ -26,22 +26,22 @@ Options:
   --prompt TEXT  Override prompt
   --help         Show this message and exit.
 $ ptrepl git
-git $
+$ git >
 # to call "git status"
-git $ status
+$ git > status
 # if you need execute some other bash command see system mode below
 ```
 
 ### Custom prompt command
 ```bash
 $ ptrepl git --prompt g
-g $
+$ g >
 ```
 
 ### Multiword command
 ```bash
 $ ptrepl "echo prefix"
-echo prefix $ 1
+$ echo prefix > 1
 echo prefix 1
 ```
 
@@ -57,7 +57,6 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/settings.json`
 ```
 ### Available settings
  - EXIT_COMMAND - change exit command
- - PREPEND_SPACE - prepend space before prompt command
  - VI_MODE - enable VI mode
  - VI_EDIT_MODE - set VI edit mode prompt string
  - VI_NORMAL_MODE - set VI normal mode prompt string
@@ -69,7 +68,6 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/settings.json`
 ```json
 {
   "EXIT_COMMAND": "exit",
-  "PREPEND_SPACE": false,
   "VI_MODE": false,
   "VI_EDIT_MODE": ":",
   "VI_NORMAL_MODE": "+",
@@ -92,9 +90,9 @@ Here is how my bash prompt(PS1) looks like by default
 ### Completion
 ```bash
 $ ptrepl git
-git $ st (press TAB)
+$ git > st (press TAB)
 # result
-git $ st
+$ git > st
           status
           stage
           stash
@@ -103,7 +101,7 @@ git $ st
 ### System mode
 ```bash
 $ ptrepl git
-git $ (press Escape + !)
+$ git > (press Escape + !)
 # result
 # you could enter your shell commands here
 Shell command: ls
@@ -112,7 +110,7 @@ Shell command: ls
 ### Command mode
 ```bash
 $ ptrepl git
-git $ (press Escape + :)
+$ git > (press Escape + :)
 # result
 # you could enter your command mode commands here
 # to list history
@@ -122,13 +120,13 @@ Command mode: history
 ### Bash like history expansion
 ```bash
 $ ptrepl git
-git $ status
+$ git > status
 # repeat last command
-git $ !!
+$ git > !!
 # repeat 10th command
-git $ !10
+$ git > !10
 # repeat 10th command from bottom of history stack
-git $ !-10
+$ git > !-10
 ```
 
 ## Similar projects

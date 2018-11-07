@@ -59,21 +59,21 @@ def get_prompt_tokens(command):
     prompt = Lexer().render(os.getenv('PS1'))
 
     def _get_prompt_tokens():
-        if not settings.PARSE_PS1:
-            return ANSI('{} > '.format(command))
-
+        _command = '\x1b[1;36m{}\x1b[m'.format(command)
         app = get_app()
 
-        _prompt, last_line = prompt.rsplit('\n')
-
-        _command = '\x1b[1;36m{}\x1b[m'.format(command)
         if app.editing_mode == EditingMode.VI:
             in_insert_mode = app.vi_state.input_mode == InputMode.INSERT
             mode = settings.VI_NORMAL_MODE if in_insert_mode else settings.VI_EDIT_MODE
             mode = '{} '.format(mode)
-            last_line = '{}{}{}'.format(mode, _command, last_line)
-        else:
-            last_line = '{}{}'.format(_command, last_line)
+            _command = '{}{}'.format(mode, _command)
+
+        if not settings.PARSE_PS1:
+            return ANSI('{} > '.format(_command))
+
+        _prompt, last_line = prompt.rsplit('\n')
+
+        last_line = '{}{}'.format(_command, last_line)
 
         _prompt = '{}\n{}'.format(_prompt, last_line)
         return ANSI(_prompt)
