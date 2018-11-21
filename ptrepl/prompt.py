@@ -82,6 +82,11 @@ def get_prompt_tokens(command):
 
 
 class PtreplSession(PromptSession):
+    def __init__(self, command, aliases, *args, **kwargs):
+        self.command = command
+        self.aliases = aliases
+        super().__init__(*args, **kwargs)
+
     def _create_layout(self):
         """
         Create `Layout` for this prompt.
@@ -139,7 +144,9 @@ class PtreplSession(PromptSession):
             enable_global_bindings=dyncond('enable_system_prompt')
         )
 
-        command_toolbar = CommandToolbar(enable_global_bindings=True)
+        command_toolbar = CommandToolbar(
+            self.command, self.aliases, enable_global_bindings=True
+        )
 
         def get_search_buffer_control():
             " Return the UIControl to be focused when searching start. "

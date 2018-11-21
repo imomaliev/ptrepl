@@ -29,13 +29,16 @@ from prompt_toolkit.lexers import SimpleLexer
 from prompt_toolkit.renderer import print_formatted_text
 from prompt_toolkit.widgets.toolbars import SystemToolbar
 
-from .config import aliases
 
 COMMAND_BUFFER = 'COMMAND_BUFFER'
 
 
 class CommandToolbar(SystemToolbar):
-    def __init__(self, prompt='Command mode: ', enable_global_bindings=True):
+    def __init__(
+        self, command, aliases, prompt='Command mode: ', enable_global_bindings=True
+    ):
+        self.command = command
+        self.aliases = aliases
         self._app = get_app()
         self.prompt = prompt
         self.enable_global_bindings = to_filter(enable_global_bindings)
@@ -122,7 +125,7 @@ class CommandToolbar(SystemToolbar):
                     ):
                         click.echo('{} {}'.format(item, index))
                 elif command == 'alias':
-                    for a, c in aliases.items():
+                    for a, c in self.aliases.items():
                         click.echo('alias "{}"="{}"'.format(a, c))
 
             yield run_in_executor(run_command)

@@ -8,7 +8,7 @@ from prompt_toolkit.history import FileHistory
 from .bash.history import BashHistoryIndexError, expand_history
 
 from .completion import BashCompleter
-from .config import settings, aliases
+from .config import settings, get_aliases
 from .history import get_history_file
 from .prompt import PtreplSession, get_prompt_tokens
 
@@ -18,12 +18,15 @@ from .prompt import PtreplSession, get_prompt_tokens
 @click.option('--prompt', help='Override prompt')
 def main(command, **kwargs):
     history = FileHistory(get_history_file(command))
+    aliases = get_aliases(command)
     completer = BashCompleter(command, aliases)
 
     prompt_str = kwargs.get('prompt') or command
 
     session = PtreplSession(
-        '',
+        command,
+        aliases,
+        message='',
         completer=completer,
         history=history,
         complete_while_typing=False,

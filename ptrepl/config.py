@@ -66,4 +66,12 @@ config_file = get_config_file()
 settings = Settings(
     user_settings=get_config(config_file, 'settings'), defaults=DEFAULTS
 )
-aliases = get_config(config_file, 'aliases')
+
+
+def get_aliases(command):
+    command = '{} '.format(command)
+    return {
+        k: v
+        for k, v in get_config(config_file, 'alias').items()
+        if k.startswith(command)
+    }

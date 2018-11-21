@@ -57,7 +57,7 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/config.json`
     "PREPEND_SPACE": true,
     "LOCAL_SHADA": true
   },
-  "aliases": {
+  "alias": {
     "git st": "git status"
   }
 }
