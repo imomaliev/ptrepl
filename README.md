@@ -9,9 +9,10 @@ Make REPL out of any bash command
  - bash like history expansion
  - list history
  - command mode
+ - aliases
 
 ## Installation
-Requires `python3` and `prompt_toolkit>2.0.7`
+Requires `python3`, `click` and `prompt_toolkit>2.0.7`
 ```bash
 pip install git+https://github.com/imomaliev/ptrepl.git
 ```
@@ -45,14 +46,20 @@ $ echo prefix > 1
 echo prefix 1
 ```
 
-## Settings
-Place settings file in `XDG_CONFIG_HOME/ptrepl/settings.json`
+## Config
+Place settings file in `XDG_CONFIG_HOME/ptrepl/config.json`
 
 ```json
 {
-  "PARSE_PS1": true,
-  "VI_MODE": true,
-  "LOCAL_SHADA": true
+  "settings": {
+    "PARSE_PS1": true,
+    "VI_MODE": true,
+    "PREPEND_SPACE": true,
+    "LOCAL_SHADA": true
+  },
+  "alias": {
+    "git st": "git status"
+  }
 }
 ```
 ### Available settings
@@ -127,6 +134,17 @@ $ git > !!
 $ git > !10
 # repeat 10th command from bottom of history stack
 $ git > !-10
+```
+
+### Bash like aliases
+```bash
+$ ptrepl git
+$ git > (press Escape + :)
+# you could enter your command mode commands here
+# to list alias
+Command mode: alias
+alias "git st"="git status"
+$ git st
 ```
 
 ## Similar projects

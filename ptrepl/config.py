@@ -1,4 +1,8 @@
-from .utils import get_xdg_json_data
+import json
+
+from pathlib import Path
+
+from .vendor.xdg import XDG_CONFIG_HOME
 
 
 DEFAULTS = {
@@ -13,7 +17,20 @@ DEFAULTS = {
 }
 
 
-USER_SETTINGS = get_xdg_json_data('settings.json')
+def get_config_file():
+    path = Path(XDG_CONFIG_HOME, 'ptrepl', 'config.json')
+    if path.exists():
+        with path.open('r') as _config_file:
+            config = json.load(_config_file)
+    else:
+        with open(path, 'w') as _config_file:
+            config = {'settings': {}}
+            _config_file.write(json.dumps(config))
+    return config
+
+
+def get_config(config_file_, name):
+    return config_file_.get(name, {})
 
 
 class Settings:
@@ -45,4 +62,16 @@ class Settings:
         return val
 
 
-settings = Settings(USER_SETTINGS, DEFAULTS)
+config_file = get_config_file()
+settings = Settings(
+    user_settings=get_config(config_file, 'settings'), defaults=DEFAULTS
+)
+
+
+def get_aliases(command):
+    command = '{} '.format(command)
+    return {
+        k: v
+        for k, v in get_config(config_file, 'alias').items()
+        if k.startswith(command)
+    }

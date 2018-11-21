@@ -1,8 +1,8 @@
 from prompt_toolkit.completion import Completer, Completion
 
-from .bash_completion import bash_completions
+from .vendor.bash_completion import bash_completions
 
-from .settings import settings
+from .config import settings
 
 
 # https://github.com/xonsh/xonsh/blob/master/xonsh/ptk/completer.py

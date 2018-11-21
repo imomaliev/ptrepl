@@ -2,15 +2,15 @@ import subprocess
 
 import click
 
-from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.history import FileHistory
 
-from .bash_history import expand_history, BashHistoryIndexError
+from .bash.history import BashHistoryIndexError, expand_history
+
 from .completion import BashCompleter
-from .prompt import get_prompt_tokens, PtreplSession
-from .settings import settings
+from .config import settings, get_aliases
 from .history import get_history_file
-from .utils import get_xdg_json_data
+from .prompt import PtreplSession, get_prompt_tokens
 
 
 @click.command()
@@ -18,13 +18,15 @@ from .utils import get_xdg_json_data
 @click.option('--prompt', help='Override prompt')
 def main(command, **kwargs):
     history = FileHistory(get_history_file(command))
-    aliases = get_xdg_json_data('aliases.json')
+    aliases = get_aliases(command)
     completer = BashCompleter(command, aliases)
 
     prompt_str = kwargs.get('prompt') or command
 
     session = PtreplSession(
-        '',
+        command,
+        aliases,
+        message='',
         completer=completer,
         history=history,
         complete_while_typing=False,
@@ -59,8 +61,12 @@ def main(command, **kwargs):
                 break
 
             call_command = '{} {}'.format(command, subcommand)
-            if call_command in aliases:
-                call_command = aliases[call_command]
+            for alias, alias_command in aliases.items():
+                if call_command.startswith(alias):
+                    if call_command != alias:
+                        alias = '{} '.format(alias)
+                        alias_command = '{} '.format(alias_command)
+                    call_command = call_command.replace(alias, alias_command)
             subprocess.call(call_command, shell=True)
         except EOFError:
             break  # Control-D pressed.
