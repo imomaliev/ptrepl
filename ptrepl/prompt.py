@@ -2,56 +2,56 @@ import os
 
 from functools import partial
 
-from prompt_toolkit.application.current import get_app
-from prompt_toolkit.shortcuts.prompt import (
-    PromptSession,
-    CompleteStyle,
-    _split_multiline_prompt,
-    _RPrompt,
-)
-from prompt_toolkit.key_binding.vi_state import InputMode
-from prompt_toolkit.enums import EditingMode
 from prompt_toolkit import ANSI
-
+from prompt_toolkit.application.current import get_app
+from prompt_toolkit.enums import EditingMode
 from prompt_toolkit.filters import (
-    is_done,
-    has_focus,
-    renderer_height_is_known,
-    is_true,
     Condition,
     has_arg,
+    has_focus,
+    is_done,
+    is_true,
+    renderer_height_is_known,
 )
-from prompt_toolkit.layout import Window, HSplit, FloatContainer, Float
+from prompt_toolkit.key_binding.vi_state import InputMode
+from prompt_toolkit.layout import Float, FloatContainer, HSplit, Window
 from prompt_toolkit.layout.containers import ConditionalContainer
 from prompt_toolkit.layout.controls import (
     BufferControl,
-    SearchBufferControl,
     FormattedTextControl,
+    SearchBufferControl,
 )
 from prompt_toolkit.layout.dimension import Dimension
 from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.layout.menus import CompletionsMenu, MultiColumnCompletionsMenu
 from prompt_toolkit.layout.processors import (
-    DynamicProcessor,
-    PasswordProcessor,
-    ConditionalProcessor,
     AppendAutoSuggestion,
+    ConditionalProcessor,
+    DisplayMultipleCursors,
+    DynamicProcessor,
     HighlightIncrementalSearchProcessor,
     HighlightSelectionProcessor,
-    DisplayMultipleCursors,
+    PasswordProcessor,
     ReverseSearchProcessor,
     merge_processors,
 )
 from prompt_toolkit.lexers import DynamicLexer
+from prompt_toolkit.shortcuts.prompt import (
+    CompleteStyle,
+    PromptSession,
+    _RPrompt,
+    _split_multiline_prompt,
+)
 from prompt_toolkit.widgets.toolbars import (
-    ValidationToolbar,
-    SystemToolbar,
     SearchToolbar,
+    SystemToolbar,
+    ValidationToolbar,
 )
 
 from .bash_prompt import Lexer
-from .toolbars import CommandToolbar
+
 from .settings import settings
+from .toolbars import CommandToolbar
 
 
 def get_prompt_tokens(command):

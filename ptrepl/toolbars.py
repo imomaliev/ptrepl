@@ -2,31 +2,31 @@ import sys
 
 import click
 
-from prompt_toolkit.application.current import get_app
-from prompt_toolkit.enums import DEFAULT_BUFFER
 from prompt_toolkit.application.application import _do_wait_for_enter
+from prompt_toolkit.application.current import get_app
+from prompt_toolkit.application.run_in_terminal import run_coroutine_in_terminal
 from prompt_toolkit.buffer import Buffer
+from prompt_toolkit.enums import DEFAULT_BUFFER
+from prompt_toolkit.eventloop import From, run_in_executor
 from prompt_toolkit.filters import (
-    has_focus,
     emacs_mode,
+    has_focus,
+    to_filter,
     vi_mode,
     vi_navigation_mode,
-    to_filter,
 )
-from prompt_toolkit.eventloop import run_in_executor, From
-from prompt_toolkit.application.run_in_terminal import run_coroutine_in_terminal
 from prompt_toolkit.key_binding.key_bindings import (
+    ConditionalKeyBindings,
     KeyBindings,
     merge_key_bindings,
-    ConditionalKeyBindings,
 )
 from prompt_toolkit.key_binding.vi_state import InputMode
 from prompt_toolkit.keys import Keys
-from prompt_toolkit.layout.containers import Window, ConditionalContainer
+from prompt_toolkit.layout.containers import ConditionalContainer, Window
 from prompt_toolkit.layout.controls import BufferControl
-from prompt_toolkit.renderer import print_formatted_text
 from prompt_toolkit.layout.processors import BeforeInput
 from prompt_toolkit.lexers import SimpleLexer
+from prompt_toolkit.renderer import print_formatted_text
 from prompt_toolkit.widgets.toolbars import SystemToolbar
 
 

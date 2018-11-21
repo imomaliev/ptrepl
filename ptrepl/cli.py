@@ -2,14 +2,14 @@ import subprocess
 
 import click
 
-from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.history import FileHistory
 
-from .bash_history import expand_history, BashHistoryIndexError
+from .bash_history import BashHistoryIndexError, expand_history
 from .completion import BashCompleter
-from .prompt import get_prompt_tokens, PtreplSession
-from .settings import settings
 from .history import get_history_file
+from .prompt import PtreplSession, get_prompt_tokens
+from .settings import settings
 from .utils import get_xdg_json_data
 
 
