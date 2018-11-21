@@ -2,7 +2,7 @@ from pathlib import Path
 
 from .vendor.xdg import XDG_DATA_HOME
 
-from .settings import settings
+from .config import settings
 
 
 def get_history_file(command):

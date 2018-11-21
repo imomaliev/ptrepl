@@ -29,6 +29,7 @@ from prompt_toolkit.lexers import SimpleLexer
 from prompt_toolkit.renderer import print_formatted_text
 from prompt_toolkit.widgets.toolbars import SystemToolbar
 
+from .config import aliases
 
 COMMAND_BUFFER = 'COMMAND_BUFFER'
 
@@ -120,6 +121,9 @@ class CommandToolbar(SystemToolbar):
                         ).history.get_strings()
                     ):
                         click.echo('{} {}'.format(item, index))
+                elif command == 'alias':
+                    for a, c in aliases.items():
+                        click.echo('alias "{}"="{}"'.format(a, c))
 
             yield run_in_executor(run_command)
 

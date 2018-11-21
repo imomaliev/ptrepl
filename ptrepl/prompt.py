@@ -50,7 +50,7 @@ from prompt_toolkit.widgets.toolbars import (
 
 from .bash.prompt import Lexer
 
-from .settings import settings
+from .config import settings
 from .toolbars import CommandToolbar
 
 
