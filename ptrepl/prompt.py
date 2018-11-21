@@ -48,7 +48,7 @@ from prompt_toolkit.widgets.toolbars import (
     ValidationToolbar,
 )
 
-from .bash_prompt import Lexer
+from .bash.prompt import Lexer
 
 from .settings import settings
 from .toolbars import CommandToolbar

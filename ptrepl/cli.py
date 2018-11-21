@@ -5,7 +5,8 @@ import click
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.history import FileHistory
 
-from .bash_history import BashHistoryIndexError, expand_history
+from .bash.history import BashHistoryIndexError, expand_history
+
 from .completion import BashCompleter
 from .history import get_history_file
 from .prompt import PtreplSession, get_prompt_tokens

@@ -2,7 +2,7 @@ import json
 
 from pathlib import Path
 
-from .xdg import XDG_CONFIG_HOME
+from .vendor.xdg import XDG_CONFIG_HOME
 
 
 BASE_DIR = 'ptrepl'

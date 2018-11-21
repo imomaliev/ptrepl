@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from .xdg import XDG_DATA_HOME
+from .vendor.xdg import XDG_DATA_HOME
 
 from .settings import settings
 

@@ -1,6 +1,6 @@
 from prompt_toolkit.completion import Completer, Completion
 
-from .bash_completion import bash_completions
+from .vendor.bash_completion import bash_completions
 
 from .settings import settings
 

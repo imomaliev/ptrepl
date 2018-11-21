@@ -11,7 +11,7 @@ Make REPL out of any bash command
  - command mode
 
 ## Installation
-Requires `python3` and `prompt_toolkit>2.0.7`
+Requires `python3`, `click` and `prompt_toolkit>2.0.7`
 ```bash
 pip install git+https://github.com/imomaliev/ptrepl.git
 ```
