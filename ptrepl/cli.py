@@ -46,11 +46,7 @@ def main(command, **kwargs):
                     subcommand, session.default_buffer.history.get_strings()
                 )
             except BashHistoryIndexError as e:
-                click.echo(
-                    '{command}: {event}: event not found'.format(
-                        command=command, event=e
-                    )
-                )
+                click.echo(f'{command}: {e}: event not found')
                 continue
             if not execute:
                 click.echo(subcommand)
@@ -60,12 +56,12 @@ def main(command, **kwargs):
             if subcommand is None:
                 break
 
-            call_command = '{} {}'.format(command, subcommand)
+            call_command = f'{command} {subcommand}'
             for alias, alias_command in aliases.items():
                 if call_command.startswith(alias):
                     if call_command != alias:
-                        alias = '{} '.format(alias)
-                        alias_command = '{} '.format(alias_command)
+                        alias = f'{alias} '
+                        alias_command = f'{alias_command} '
                     call_command = call_command.replace(alias, alias_command)
             subprocess.call(call_command, shell=True)
         except EOFError:

@@ -65,17 +65,19 @@ from collections import OrderedDict
 from pygments.token import Token
 
 
-regexes = OrderedDict((
-    ('cwd', re.compile(r'^\\w')),
-    ('cmd', re.compile(r'^\$\([^\)]*\)')),
-    ('array', re.compile(r'^\$\{[^\}]*\}')),
-    ('datetime', re.compile(r'^\\D\{[^\}]*\}')),
-    ('newline', re.compile(r'^\\n')),
-    ('user', re.compile(r'^\\u')),
-    ('hostname', re.compile(r'^\\h')),
-    ('dollar', re.compile(r'^\\\$')),
-    ('string', re.compile(r'^.')),
-))
+regexes = OrderedDict(
+    (
+        ('cwd', re.compile(r'^\\w')),
+        ('cmd', re.compile(r'^\$\([^\)]*\)')),
+        ('array', re.compile(r'^\$\{[^\}]*\}')),
+        ('datetime', re.compile(r'^\\D\{[^\}]*\}')),
+        ('newline', re.compile(r'^\\n')),
+        ('user', re.compile(r'^\\u')),
+        ('hostname', re.compile(r'^\\h')),
+        ('dollar', re.compile(r'^\\\$')),
+        ('string', re.compile(r'^.')),
+    )
+)
 
 
 class Lexer(object):
@@ -92,24 +94,28 @@ class Lexer(object):
 
     def _get_git_branch(self):
         if os.path.exists('.git'):
-            branch = self.cmd("git symbolic-ref HEAD 2> /dev/null || git describe --tags --exact-match HEAD 2> /dev/null || git rev-parse HEAD", is_script=False)
+            branch = self.cmd(
+                "git symbolic-ref HEAD 2> /dev/null || git describe --tags --exact-match HEAD 2> /dev/null || git rev-parse HEAD",
+                is_script=False,
+            )
             if 'refs/heads/' in branch:
                 branch = branch.replace('refs/heads/', '')
             else:
-                branch = '({})'.format(branch)
+                branch = f'({branch})'
         else:
             return ''
-        return '[{}] '.format(branch)
+        return f'[{branch}] '
 
     def _get_hg_branch(self):
         if os.path.exists('.hg'):
-            return '[{}] '.format(self.cmd("$(hg prompt '{branch}')", is_script=True))
+            branch = self.cmd("$(hg prompt '{branch}')", is_script=True)
+            return f'[{branch}] '
         else:
             return ''
 
     def _get_direnv(self):
         if os.path.exists('.direnv'):
-            return '{{{}}} '.format(os.path.basename(os.getcwd()))
+            return f'{{{os.path.basename(os.getcwd())}}} '
         else:
             return ''
 
@@ -122,17 +128,16 @@ class Lexer(object):
             return self._get_venv()
         if '__dotfiles_ps1' in raw_token:
             return self._get_direnv()
-        cmd = 'echo "{}"'.format(raw_token) if is_script else raw_token
+        cmd = f'echo "{raw_token}"' if is_script else raw_token
         return subprocess.check_output(
-            ['bash', '-c', cmd], universal_newlines=True,
-            stderr=subprocess.PIPE
+            ['bash', '-c', cmd], universal_newlines=True, stderr=subprocess.PIPE
         ).strip('\n')
 
     def _get_venv(self):
         venv = os.getenv('VIRTUAL_ENV') or ''
         venv = os.getcwd() if venv.endswith('.venv') else venv
         if venv:
-            return '({}) '.format(os.path.basename(venv))
+            return f'({os.path.basename(venv)}) '
         else:
             return ''
 

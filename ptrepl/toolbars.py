@@ -118,15 +118,15 @@ class CommandToolbar(SystemToolbar):
             def run_command():
                 self.print_text(display_before_text)
                 if command == 'history':
-                    for item, index in enumerate(
+                    for index, item in enumerate(
                         app.layout.get_buffer_by_name(
                             DEFAULT_BUFFER
                         ).history.get_strings()
                     ):
-                        click.echo('{} {}'.format(item, index))
+                        click.echo(f'{index} {item}')
                 elif command == 'alias':
-                    for a, c in self.aliases.items():
-                        click.echo('alias "{}"="{}"'.format(a, c))
+                    for alias, alias_command in self.aliases.items():
+                        click.echo(f'alias "{alias}"="{alias_command}"')
 
             yield run_in_executor(run_command)
 

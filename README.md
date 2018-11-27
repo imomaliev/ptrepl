@@ -12,7 +12,7 @@ Make REPL out of any bash command
  - aliases
 
 ## Installation
-Requires `python3`, `click` and `prompt_toolkit>2.0.7`
+Requires `python>3.6`, `click`, `prompt_toolkit>2.0.7`, `pygments`
 ```bash
 pip install git+https://github.com/imomaliev/ptrepl.git
 ```
