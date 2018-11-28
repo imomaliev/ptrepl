@@ -12,13 +12,13 @@ Make REPL out of any bash command
  - aliases
 
 ## Installation
-Requires `python>3.6`, `click`, `prompt_toolkit>2.0.7`, `pygments`
+Requires `python>=3.6`, `click`, `prompt_toolkit>=2.0.7`, `pygments`
 ```bash
 pip install git+https://github.com/imomaliev/ptrepl.git
 ```
 
 ## Usage
-## Basic Usage
+### Basic Usage
 ```bash
 $ ptrepl --help
 Usage: ptrepl [OPTIONS] COMMAND
@@ -144,7 +144,7 @@ $ git > (press Escape + :)
 # to list alias
 Command mode: alias
 alias "git st"="git status"
-$ git st
+$ git > st
 ```
 
 ## Similar projects
