@@ -69,7 +69,7 @@ settings = Settings(
 
 
 def get_aliases(command):
-    command = '{} '.format(command)
+    command = f'{command} '
     return {
         k: v
         for k, v in get_config(config_file, 'alias').items()

@@ -17,7 +17,7 @@ class BashCompleter(Completer):
         word = document.get_word_before_cursor(WORD=True)
         if not subcommand:
             return
-        line = '{} {}'.format(command, subcommand)
+        line = f'{command} {subcommand}'
         start_position = -len(word)
         split = line.split()
         if len(split) > 1 and not line.endswith(' '):
@@ -32,10 +32,9 @@ class BashCompleter(Completer):
             yield Completion(completion.strip('\'"'), start_position=start_position)
         if len(split) == 2:
             for a in self.aliases:
-                if a.startswith('{} {}'.format(command, prefix)):
+                if a.startswith(f'{command} {prefix}'):
                     yield Completion(
-                        a.replace('{} '.format(command), ''),
-                        start_position=start_position,
+                        a.replace(f'{command} ', ''), start_position=start_position
                     )
 
     def get_real_subcommand(self, subcommand):
@@ -46,7 +45,7 @@ class BashCompleter(Completer):
         subcommand = subcommand.lstrip()
         if subcommand.strip() == settings.EXIT_COMMAND:
             return None
-        command_with_space = '{} '.format(self.command)
+        command_with_space = f'{self.command} '
         if subcommand.startswith(command_with_space):
             subcommand = subcommand.replace(command_with_space, '')
         return subcommand
