@@ -96,8 +96,7 @@ def expand_history(command, history):
     while res is not None:
         match = res.group(0)
         history_index = int(match[1:])
-        if history_index < 0:
-            history_index -= 1
+        history_index -= 1
         try:
             history_command = history[history_index]
         except IndexError:

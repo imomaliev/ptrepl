@@ -6,8 +6,9 @@ name = "pypi"
 [packages]
 pygments = "*"
 click = "*"
-prompt-toolkit = "==2.0.7"
+prompt-toolkit = ">=2.0.7"
 
 [dev-packages]
 pylint = "*"
-pycodestyle = "*"
+flake8 = "*"
+pytest = "*"
