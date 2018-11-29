@@ -3,6 +3,7 @@ dist: xenial
 python:
   - "3.6"
   - "3.7"
+# use tox to run tests https://stackoverflow.com/a/35048200/3627387
 install: pip install tox-travis
 script: tox
 
@@ -10,8 +11,11 @@ deploy:
   provider: pypi
   user: "imomaliev"
   distributions: sdist bdist_wheel
+  # we are using pro integration to generate travis
+  # travis encrypt --pro "password" --add deploy.password
   password:
     secure: qknD2JCMPZbstOYkUQIKrRaCcIZPH+SDXa1y+pcC7bOTTRLo1aA1w6TdzurdGb+G1SWb+dS4ytVt3+Zvk3sfLgUwHvyl4njUz6yur9n4kGPKnMO3kKSBHhfQIZ+l5dCyco/VhTLRA83CbIqju6ZL+Idau5VvQiM/pdrc5TVPgkVO5DM3Nu7j0jy9FxcussFGVq9ZT3zAdq4hc6/pLkFZkrFv4D/F0psx2XxXGCZJIzsEP0ccbNyofHQzRmL8rG6fCq/PtvUXmomGq4oLW4HXdruSFV2fULeN0UvZ6+ep9okZT4ZbSfBa9f9zp1M7JWbeKR3w7xAiI5o8f0kyjYa1JhU8b5z5go15DIvUt1rYoXWfbV7+9g8NMQoztI8HDtutk1los4sJ3CMtdRmGXQ+A+Rvd+lPzRKnU3t0o6whSQ6Pk/dDN9B5Wds0SDINaVNswJIPIHzbOfqFb36EQ/H/EXT6PR/UfuyrrcqazbtVuP5bk8+01cti5bimBkrRGmYyfsNJjryj9uKCumx4vfF3KrZcP62rc4TvU096cJ9owb2oJDt2EexNSIbaZnHzqHPq8kbpryCr302VVFBdRSKY88KHKWti8EpcbmeolODHmb/7IOA0gSj26xAqMNbdJs/mQKOWyHrHbsfoAtG1ePSrt68oEaK/QHCdsWcY7sS6pHuI=
   on:
     tags: true
+    repo: imomaliev/ptrepl
   skip_existing: true
