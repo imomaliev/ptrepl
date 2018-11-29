@@ -8,7 +8,7 @@ from .vendor.xdg import XDG_CONFIG_HOME
 DEFAULTS = {
     "EXIT_COMMAND": "exit",
     "VI_MODE": False,
-    "PREPEND_SPACE": False,
+    "READLINE_COMPLETION": False,
     "VI_EDIT_MODE": ":",
     "VI_NORMAL_MODE": "+",
     "PARSE_PS1": False,  # experimental

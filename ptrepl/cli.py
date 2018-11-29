@@ -3,6 +3,7 @@ import subprocess
 import click
 
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from prompt_toolkit.shortcuts import CompleteStyle
 from prompt_toolkit.history import FileHistory
 
 from .bash.history import BashHistoryIndexError, expand_history
@@ -22,14 +23,19 @@ def main(command, **kwargs):
     completer = BashCompleter(command, aliases)
 
     prompt_str = kwargs.get('prompt') or command
+    complete_style = (
+        CompleteStyle.READLINE_LIKE
+        if settings.READLINE_COMPLETION
+        else CompleteStyle.COLUMN
+    )
 
     session = PtreplSession(
         command,
         aliases,
         message='',
         completer=completer,
+        complete_style=complete_style,
         history=history,
-        complete_while_typing=False,
         enable_system_prompt=True,
         enable_suspend=True,
         vi_mode=settings.VI_MODE,
