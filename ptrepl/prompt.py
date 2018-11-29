@@ -54,29 +54,34 @@ from .config import settings
 from .toolbars import CommandToolbar
 
 
+def _get_prompt_command(command):
+    command = f'\x1b[1;36m{command}\x1b[m'
+    app = get_app()
+
+    if app.editing_mode == EditingMode.VI:
+        in_insert_mode = app.vi_state.input_mode == InputMode.INSERT
+        mode = settings.VI_NORMAL_MODE if in_insert_mode else settings.VI_EDIT_MODE
+        command = f'{mode} {command}'
+    return command
+
+
 def get_prompt_tokens(command):
     # https://github.com/jonathanslenders/python-prompt-toolkit/issues/247
-    prompt = Lexer().render(os.getenv('PS1'))
+    if settings.PARSE_PS1:
+        prompt = Lexer().render(os.getenv('PS1'))
 
-    def _get_prompt_tokens():
-        _command = f'\x1b[1;36m{command}\x1b[m'
-        app = get_app()
+        def _get_prompt_tokens():
+            _command = _get_prompt_command(command)
+            _prompt, last_line = prompt.rsplit('\n')
+            last_line = f'{_command}{last_line}'
+            _prompt = f'{_prompt}\n{last_line}'
+            return ANSI(_prompt)
 
-        if app.editing_mode == EditingMode.VI:
-            in_insert_mode = app.vi_state.input_mode == InputMode.INSERT
-            mode = settings.VI_NORMAL_MODE if in_insert_mode else settings.VI_EDIT_MODE
-            mode = f'{mode} '
-            _command = f'{mode}{_command}'
+    else:
 
-        if not settings.PARSE_PS1:
+        def _get_prompt_tokens():
+            _command = _get_prompt_command(command)
             return ANSI(f'{_command} > ')
-
-        _prompt, last_line = prompt.rsplit('\n')
-
-        last_line = f'{_command}{last_line}'
-
-        _prompt = f'{_prompt}\n{last_line}'
-        return ANSI(_prompt)
 
     return _get_prompt_tokens
 
