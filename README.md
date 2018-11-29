@@ -17,7 +17,7 @@ Make REPL out of any bash command
 ## Installation
 Requires `python>=3.6`, `click`, `prompt_toolkit>=2.0.7`, `pygments`
 ```bash
-pip install git+https://github.com/imomaliev/ptrepl.git
+pip install ptrepl
 ```
 
 ## Usage
