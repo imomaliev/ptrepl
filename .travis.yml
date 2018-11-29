@@ -6,17 +6,12 @@ python:
 install: pip install tox-travis
 script: tox
 
-branches:
-  only:
-    - master
-
 deploy:
   provider: pypi
   user: "imomaliev"
   distributions: sdist bdist_wheel
   password:
-    secure: NDvqXzZ7DW/HQKcyRlbTJjXE9NhtrtV9haxITmAPb5boYBR0ESrUy8MFGHoIRi0KYob7FLcCAGalr+Ay4bn1mjjTyTpzMNeN0yj8gPEVDRG9wvzgEmJC2w/F4wqxT1WilgJRnbEl/wW+wL5YNehr+hS1pMDtjTtPndjwfqNbsJKo/rUc84POpWZ+DtSD5sW8JuvrjhjPV65ji+rHnZoe/YewOwDaGp5+TjUfvupJg1djC67BItZ1cyobvdrnvD/7WF2o4of7d3xOHcf45nqhaq3TGWfegu10ULV6GUCUcy5oOVEdt5TjwntfwP0PPwqDNepDTK896GR7itNwGrAHXhXfZbJUhW+Nfk1EYicD92paE5W26W9bqlFkb1kuHf1229efdV41rF2gdD76VVYPD/70i16GGRTJ8I/eRUJbffDb4PZyxBfb0it+QU9HBqtDeUsEej0kUc+2xgwKMFgsV12LoCcww/tpbbtzzOtBECLG5OKCVNs3x/tX2GBwQE165PgiI54lKdiT9wuBgY0jv5ldc7V3/7TbvKSV5QcahBKffi9RhWYfKYyjJPBEzUh9/I9BzIRntHwMQsM3jOEZMtYpHv+2aceDRmS2LuFT2n3NhWmeUYg+mVTCTFIH4Pyotl4PM77GoJdU5wQpEUZdf9YyA7TDnTvGCVKro+98O80=
+    secure: qknD2JCMPZbstOYkUQIKrRaCcIZPH+SDXa1y+pcC7bOTTRLo1aA1w6TdzurdGb+G1SWb+dS4ytVt3+Zvk3sfLgUwHvyl4njUz6yur9n4kGPKnMO3kKSBHhfQIZ+l5dCyco/VhTLRA83CbIqju6ZL+Idau5VvQiM/pdrc5TVPgkVO5DM3Nu7j0jy9FxcussFGVq9ZT3zAdq4hc6/pLkFZkrFv4D/F0psx2XxXGCZJIzsEP0ccbNyofHQzRmL8rG6fCq/PtvUXmomGq4oLW4HXdruSFV2fULeN0UvZ6+ep9okZT4ZbSfBa9f9zp1M7JWbeKR3w7xAiI5o8f0kyjYa1JhU8b5z5go15DIvUt1rYoXWfbV7+9g8NMQoztI8HDtutk1los4sJ3CMtdRmGXQ+A+Rvd+lPzRKnU3t0o6whSQ6Pk/dDN9B5Wds0SDINaVNswJIPIHzbOfqFb36EQ/H/EXT6PR/UfuyrrcqazbtVuP5bk8+01cti5bimBkrRGmYyfsNJjryj9uKCumx4vfF3KrZcP62rc4TvU096cJ9owb2oJDt2EexNSIbaZnHzqHPq8kbpryCr302VVFBdRSKY88KHKWti8EpcbmeolODHmb/7IOA0gSj26xAqMNbdJs/mQKOWyHrHbsfoAtG1ePSrt68oEaK/QHCdsWcY7sS6pHuI=
   on:
     tags: true
-    repo: imomaliev/ptrepl
   skip_existing: true
