@@ -1,5 +1,6 @@
 # ptrepl
 
+[![PyPI version](https://badge.fury.io/py/ptrepl.svg)](https://badge.fury.io/py/ptrepl)
 [![Build Status](https://travis-ci.com/imomaliev/ptrepl.svg?branch=master)](https://travis-ci.com/imomaliev/ptrepl)
 
 ## About
