@@ -3,15 +3,20 @@ dist: xenial
 python:
   - "3.6"
   - "3.7"
-install:
-  - pip install -e .
-script:
-  - pytest
+install: pip install tox-travis
+script: tox
+
+branches:
+  only:
+    - master
+
 deploy:
   provider: pypi
   user: "imomaliev"
+  distributions: sdist bdist_wheel
   password:
     secure: NDvqXzZ7DW/HQKcyRlbTJjXE9NhtrtV9haxITmAPb5boYBR0ESrUy8MFGHoIRi0KYob7FLcCAGalr+Ay4bn1mjjTyTpzMNeN0yj8gPEVDRG9wvzgEmJC2w/F4wqxT1WilgJRnbEl/wW+wL5YNehr+hS1pMDtjTtPndjwfqNbsJKo/rUc84POpWZ+DtSD5sW8JuvrjhjPV65ji+rHnZoe/YewOwDaGp5+TjUfvupJg1djC67BItZ1cyobvdrnvD/7WF2o4of7d3xOHcf45nqhaq3TGWfegu10ULV6GUCUcy5oOVEdt5TjwntfwP0PPwqDNepDTK896GR7itNwGrAHXhXfZbJUhW+Nfk1EYicD92paE5W26W9bqlFkb1kuHf1229efdV41rF2gdD76VVYPD/70i16GGRTJ8I/eRUJbffDb4PZyxBfb0it+QU9HBqtDeUsEej0kUc+2xgwKMFgsV12LoCcww/tpbbtzzOtBECLG5OKCVNs3x/tX2GBwQE165PgiI54lKdiT9wuBgY0jv5ldc7V3/7TbvKSV5QcahBKffi9RhWYfKYyjJPBEzUh9/I9BzIRntHwMQsM3jOEZMtYpHv+2aceDRmS2LuFT2n3NhWmeUYg+mVTCTFIH4Pyotl4PM77GoJdU5wQpEUZdf9YyA7TDnTvGCVKro+98O80=
   on:
     tags: true
+    repo: imomaliev/ptrepl
   skip_existing: true
