@@ -9,8 +9,8 @@ DEFAULTS = {
     "EXIT_COMMAND": "exit",
     "VI_MODE": False,
     "READLINE_COMPLETION": False,
-    "VI_EDIT_MODE": ":",
-    "VI_NORMAL_MODE": "+",
+    "VI_CMD_MODE_STRING": ":",
+    "VI_INS_MODE_STRING": "+",
     "PARSE_PS1": False,  # experimental
     "LOCAL_SHADA": False,
     "LOCAL_SHADA_PATH": ".direnv/ptrepl/",

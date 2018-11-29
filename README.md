@@ -69,8 +69,8 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/config.json`
 ### Available settings
  - EXIT_COMMAND - change exit command
  - VI_MODE - enable VI mode
- - VI_EDIT_MODE - set VI edit mode prompt string
- - VI_NORMAL_MODE - set VI normal mode prompt string
+ - VI_CMD_MODE_STRING - set VI command mode prompt string
+ - VI_INS_MODE_STRING - set VI insert mode prompt string
  - READLINE_COMPLETION: use readline like completion instead of dropdown one
  - PARSE_PS1 {experimental} - will try to adgust ptrepl's prompt according to your PS1 setting
  - LOCAL_SHADA - store shada(history) in LOCAL_SHADA_PATH
@@ -81,8 +81,8 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/config.json`
 {
   "EXIT_COMMAND": "exit",
   "VI_MODE": false,
-  "VI_EDIT_MODE": ":",
-  "VI_NORMAL_MODE": "+",
+  "VI_CMD_MODE_STRING": ":",
+  "VI_INS_MODE_STRING": "+",
   "READLINE_COMPLETION": true,
   "PARSE_PS1": false,
   "LOCAL_SHADA": false,

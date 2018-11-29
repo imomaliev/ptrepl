@@ -60,7 +60,11 @@ def _get_prompt_command_token(command):
 
     if app.editing_mode == EditingMode.VI:
         in_insert_mode = app.vi_state.input_mode == InputMode.INSERT
-        mode = settings.VI_NORMAL_MODE if in_insert_mode else settings.VI_EDIT_MODE
+        mode = (
+            settings.VI_INS_MODE_STRING
+            if in_insert_mode
+            else settings.VI_CMD_MODE_STRING
+        )
         command = f'{mode} {command}'
     return command
 
@@ -72,9 +76,14 @@ def get_prompt_tokens(command):
 
         def _get_prompt_tokens():
             _command = _get_prompt_command_token(command)
-            _prompt, last_line = prompt.rsplit('\n')
-            last_line = f'{_command}{last_line}'
-            _prompt = f'{_prompt}\n{last_line}'
+            _prompt = prompt.rsplit('\n')
+            if len(_prompt) == 2:
+                _prompt, last_line = _prompt
+                last_line = f'{_command}{last_line}'
+                _prompt = f'{_prompt}\n{last_line}'
+            else:
+                (_prompt,) = _prompt
+                _prompt = f'{_command} {_prompt}'
             return ANSI(_prompt)
 
     else:
