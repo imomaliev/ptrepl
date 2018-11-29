@@ -7,6 +7,12 @@ python:
 install: pip install tox-travis
 script: tox
 
+# https://docs.travis-ci.com/user/customizing-the-build/#safelisting-or-blocklisting-branches
+branches:
+  only:
+    - master
+    - /^(\d\.){2}\d$/
+
 deploy:
   provider: pypi
   user: "imomaliev"

@@ -36,8 +36,15 @@ setup(
     install_requires=['prompt_toolkit==2.0.7', 'click', 'pygments'],
     entry_points={'console_scripts': ['ptrepl = ptrepl.cli:main']},
     classifiers=[
-        "Programming Language :: Python :: 3.6",
+        "Development Status :: 6 - Mature",
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "Intended Audience :: System Administrators",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Topic :: Utilities",
     ],
 )
