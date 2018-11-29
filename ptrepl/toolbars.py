@@ -147,13 +147,13 @@ class CommandToolbar(SystemToolbar):
         @handle('c-g', filter=focused)
         @handle('c-c', filter=focused)
         def _(event):
-            " Hide system prompt. "
+            """Hide system prompt."""
             self.system_buffer.reset()
             event.app.layout.focus_last()
 
         @handle('enter', filter=focused)
         def _(event):
-            " Run command. "
+            """Run command."""
             self.run(
                 event.app,
                 self.system_buffer.text,
@@ -169,14 +169,14 @@ class CommandToolbar(SystemToolbar):
         @handle('escape', filter=focused)
         @handle('c-c', filter=focused)
         def _(event):
-            " Hide command prompt. "
+            """Hide command prompt."""
             event.app.vi_state.input_mode = InputMode.NAVIGATION
             self.system_buffer.reset()
             event.app.layout.focus_last()
 
         @handle('enter', filter=focused)
         def _(event):
-            " Run command. "
+            """Run command."""
             event.app.vi_state.input_mode = InputMode.NAVIGATION
             self.run(
                 event.app,
@@ -193,12 +193,12 @@ class CommandToolbar(SystemToolbar):
 
         @handle(Keys.Escape, ':', filter=~focused & emacs_mode, is_global=True)
         def _(event):
-            " M-'!' will focus this user control. "
+            """M-'!' will focus this user control."""
             event.app.layout.focus(self.window)
 
         @handle(':', filter=~focused & vi_mode & vi_navigation_mode, is_global=True)
         def _(event):
-            " Focus. "
+            """Focus."""
             event.app.vi_state.input_mode = InputMode.INSERT
             event.app.layout.focus(self.window)
 

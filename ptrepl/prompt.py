@@ -54,7 +54,7 @@ from .config import settings
 from .toolbars import CommandToolbar
 
 
-def _get_prompt_command(command):
+def _get_prompt_command_token(command):
     command = f'\x1b[1;36m{command}\x1b[m'
     app = get_app()
 
@@ -71,7 +71,7 @@ def get_prompt_tokens(command):
         prompt = Lexer().render(os.getenv('PS1'))
 
         def _get_prompt_tokens():
-            _command = _get_prompt_command(command)
+            _command = _get_prompt_command_token(command)
             _prompt, last_line = prompt.rsplit('\n')
             last_line = f'{_command}{last_line}'
             _prompt = f'{_prompt}\n{last_line}'
@@ -80,7 +80,7 @@ def get_prompt_tokens(command):
     else:
 
         def _get_prompt_tokens():
-            _command = _get_prompt_command(command)
+            _command = _get_prompt_command_token(command)
             return ANSI(f'{_command} > ')
 
     return _get_prompt_tokens
@@ -93,9 +93,6 @@ class PtreplSession(PromptSession):
         super().__init__(*args, **kwargs)
 
     def _create_layout(self):
-        """
-        Create `Layout` for this prompt.
-        """
         dyncond = self._dyncond
 
         # Create functions that will dynamically split the prompt. (If we have
@@ -154,7 +151,7 @@ class PtreplSession(PromptSession):
         )
 
         def get_search_buffer_control():
-            " Return the UIControl to be focused when searching start. "
+            """Return the UIControl to be focused when searching start. """
             if is_true(self.multiline):
                 return search_toolbar.control
             else:
