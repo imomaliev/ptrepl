@@ -16,7 +16,7 @@ def read(fname):
 
 setup(
     name='ptrepl',
-    version='0.8.0',
+    version='0.8.1',
     description='Run command as REPL-environment',
     long_description=read('README.md'),
     author='Sardorbek Imomaliev',

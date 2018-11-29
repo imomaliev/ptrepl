@@ -7,3 +7,11 @@ install:
   - pip install -e .
 script:
   - pytest
+deploy:
+  provider: pypi
+  user: "imomaliev"
+  password:
+    secure: "dSv9/dhMF8TdtLC5159mchD4ztwFaRMnyJVdgOZZPRMVDMmyyKTYvIqgCL6+BtathJaaobztjzQo01oT5FnquhDABvCAlkrpK3mvecdSJutLUothHxdZd5M0EqYMXqkacV2jrjMkXBi2xQC0bSlXQ62jmZRhWcuDScF6Bsb4T2EcpDZ3MfJ8UXMpz0yOANhs8PxhlPci7epD/36gzNTy39hGztltM5XlzvrZ1jccK41sg4G1/4/UtYxKilfmsnsy9kH7B9uC/DDBJbbCa6VLMXQelvUypfQg+uf1tw9oGE3HaiOIeTyT2kWj2ZTHfyQnzUHIT+oaBav2tYzq/XmNg3EDm+9tlvcYlAUWfn0e2bNsDjXTaQN2TOsFS8paD3E3CbFTlhvpFiKkEsg507S/KvCQFyyu0/VKWGSEVYGkC1sM98DfMpDspOQ+LYfnku1/yIN1JEslJ8MWSeYlcS0pLMC/s2jp6LUyNaMRHMp0H27a1gOcsinMLYLk61Pr3uDC+O55AHyfM5LEHdv1O140zU06f+/1aSX5Ea+8H4K2OjNQVtNnUHpPtxFkgTBw44EcHsEmL7qj+c40CpbD+XrvRtMtyxFMyyceNvcUF1iCys/PTHOh39kvcE7U6asreoV0zQ4YJTHJdM3DA/7jL1NIxtqYhi1ncrIeXMy42x2gK3k="
+  on:
+    tags: true
+  skip_existing: true
