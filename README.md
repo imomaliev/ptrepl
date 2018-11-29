@@ -1,5 +1,8 @@
 # ptrepl
 
+[![Build Status](https://travis-ci.com/imomaliev/ptrepl.svg?branch=master)](https://travis-ci.com/imomaliev/ptrepl)
+
+## About
 Make REPL out of any bash command
 
  - has bash completion
