@@ -57,8 +57,8 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/config.json`
 {
   "settings": {
     "PARSE_PS1": true,
-    "VI_MODE": true,
-    "PREPEND_SPACE": true,
+    "EDITING_MODE": "vi",
+    "READLINE_COMPLETION": true,
     "LOCAL_SHADA": true
   },
   "alias": {
@@ -68,9 +68,12 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/config.json`
 ```
 ### Available settings
  - EXIT_COMMAND - change exit command
- - VI_MODE - enable VI mode
- - VI_EDIT_MODE - set VI edit mode prompt string
- - VI_NORMAL_MODE - set VI normal mode prompt string
+ - EDITING_MODE - choose mode vi/emacs
+ - SHOW_MODE_IN_PROMPT - show editing mode string in prompt
+ - EMACS_MODE_STRING - set emacs mode prompt string
+ - VI_INS_MODE_STRING - set vi insert mode prompt string
+ - VI_CMD_MODE_STRING - set vi command mode prompt string
+ - READLINE_COMPLETION: use readline like completion instead of dropdown one
  - PARSE_PS1 {experimental} - will try to adgust ptrepl's prompt according to your PS1 setting
  - LOCAL_SHADA - store shada(history) in LOCAL_SHADA_PATH
  - LOCAL_SHADA_PATH - path to local shada
@@ -79,9 +82,12 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/config.json`
 ```json
 {
   "EXIT_COMMAND": "exit",
-  "VI_MODE": false,
-  "VI_EDIT_MODE": ":",
-  "VI_NORMAL_MODE": "+",
+  "EDITING_MODE": "emacs",
+  "SHOW_MODE_IN_PROMPT": false,
+  "EMACS_MODE_STRING": "@",
+  "VI_INS_MODE_STRING": "(ins)",
+  "VI_CMD_MODE_STRING": "(cmd)",
+  "READLINE_COMPLETION": false,
   "PARSE_PS1": false,
   "LOCAL_SHADA": false,
   "LOCAL_SHADA_PATH": ".direnv/ptrepl/",
@@ -90,7 +96,7 @@ Place settings file in `XDG_CONFIG_HOME/ptrepl/config.json`
 
 ## Features
 
-### Parsing PS1
+### Parsing PS1(requires PARSE_PS1 set to true)
 Here is how my bash prompt(PS1) looks like by default
 ```bash
  {ptrepl} ~/Development/Python/ptrepl [master] |19:18:36 07-Feb-18|
@@ -101,13 +107,23 @@ Here is how my bash prompt(PS1) looks like by default
 ### Completion
 ```bash
 $ ptrepl git
-$ git > st (press TAB)
+$ git > sta (press TAB)
 # result
-$ git > st
+$ git > sta
           status
           stage
           stash
 ```
+
+#### Readline like completion(requires READLINE_COMPLETION set to true)
+```bash
+$ ptrepl git
+$ git > sta (press TAB)
+# result
+$ git > sta
+stage  stash  status
+```
+
 
 ### System mode
 ```bash

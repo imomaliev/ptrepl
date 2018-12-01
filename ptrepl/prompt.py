@@ -50,33 +50,51 @@ from prompt_toolkit.widgets.toolbars import (
 
 from .bash.prompt import Lexer
 
-from .config import settings
 from .toolbars import CommandToolbar
 
 
-def get_prompt_tokens(command):
+def _get_prompt_mode_token(emacs, vi_ins, vi_cmd):
+    app = get_app()
+    if app.editing_mode == EditingMode.VI:
+        return vi_ins if app.vi_state.input_mode == InputMode.INSERT else vi_cmd
+    return emacs
+
+
+def get_prompt_tokens(
+    prompt, ps1, show_mode, emacs_mode_string, vi_ins_mode_string, vi_cmd_mode_string
+):
     # https://github.com/jonathanslenders/python-prompt-toolkit/issues/247
-    prompt = Lexer().render(os.getenv('PS1'))
+    prompt = f'\x1b[1;36m{prompt}\x1b[m'
+    if ps1:
+        ps1_prompt = Lexer().render(os.getenv('PS1'))
 
-    def _get_prompt_tokens():
-        _command = f'\x1b[1;36m{command}\x1b[m'
-        app = get_app()
+        def _get_prompt_tokens():
+            _prompt = prompt
+            if show_mode:
+                mode = _get_prompt_mode_token(
+                    emacs_mode_string, vi_ins_mode_string, vi_cmd_mode_string
+                )
+                _prompt = f'{mode} {prompt}'
+            _ps1_prompt = ps1_prompt.rsplit('\n')
+            if len(_ps1_prompt) == 2:
+                _ps1_prompt, last_line = _ps1_prompt
+                last_line = f'{_prompt}{last_line}'
+                _prompt = f'{_ps1_prompt}\n{last_line}'
+            else:
+                (_ps1_prompt,) = _ps1_prompt
+                _prompt = f'{_prompt}{_ps1_prompt}'
+            return ANSI(_prompt)
 
-        if app.editing_mode == EditingMode.VI:
-            in_insert_mode = app.vi_state.input_mode == InputMode.INSERT
-            mode = settings.VI_NORMAL_MODE if in_insert_mode else settings.VI_EDIT_MODE
-            mode = f'{mode} '
-            _command = f'{mode}{_command}'
+    else:
 
-        if not settings.PARSE_PS1:
-            return ANSI(f'{_command} > ')
-
-        _prompt, last_line = prompt.rsplit('\n')
-
-        last_line = f'{_command}{last_line}'
-
-        _prompt = f'{_prompt}\n{last_line}'
-        return ANSI(_prompt)
+        def _get_prompt_tokens():
+            _prompt = prompt
+            if show_mode:
+                mode = _get_prompt_mode_token(
+                    emacs_mode_string, vi_ins_mode_string, vi_cmd_mode_string
+                )
+                _prompt = f'{mode} {prompt}'
+            return ANSI(f'{_prompt} > ')
 
     return _get_prompt_tokens
 
@@ -88,9 +106,6 @@ class PtreplSession(PromptSession):
         super().__init__(*args, **kwargs)
 
     def _create_layout(self):
-        """
-        Create `Layout` for this prompt.
-        """
         dyncond = self._dyncond
 
         # Create functions that will dynamically split the prompt. (If we have
@@ -149,7 +164,7 @@ class PtreplSession(PromptSession):
         )
 
         def get_search_buffer_control():
-            " Return the UIControl to be focused when searching start. "
+            """Return the UIControl to be focused when searching start. """
             if is_true(self.multiline):
                 return search_toolbar.control
             else:
