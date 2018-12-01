@@ -7,10 +7,12 @@ from .vendor.xdg import XDG_CONFIG_HOME
 
 DEFAULTS = {
     "EXIT_COMMAND": "exit",
-    "VI_MODE": False,
+    "EDITING_MODE": "emacs",
+    "SHOW_MODE_IN_PROMPT": False,
     "READLINE_COMPLETION": False,
-    "VI_CMD_MODE_STRING": ":",
-    "VI_INS_MODE_STRING": "+",
+    "EMACS_MODE_STRING": "@",
+    "VI_INS_MODE_STRING": "(ins)",
+    "VI_CMD_MODE_STRING": "(cmd)",
     "PARSE_PS1": False,  # experimental
     "LOCAL_SHADA": False,
     "LOCAL_SHADA_PATH": ".direnv/ptrepl/",

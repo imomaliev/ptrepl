@@ -50,47 +50,51 @@ from prompt_toolkit.widgets.toolbars import (
 
 from .bash.prompt import Lexer
 
-from .config import settings
 from .toolbars import CommandToolbar
 
 
-def _get_prompt_command_token(command):
-    command = f'\x1b[1;36m{command}\x1b[m'
+def _get_prompt_mode_token(emacs, vi_ins, vi_cmd):
     app = get_app()
-
     if app.editing_mode == EditingMode.VI:
-        in_insert_mode = app.vi_state.input_mode == InputMode.INSERT
-        mode = (
-            settings.VI_INS_MODE_STRING
-            if in_insert_mode
-            else settings.VI_CMD_MODE_STRING
-        )
-        command = f'{mode} {command}'
-    return command
+        return vi_ins if app.vi_state.input_mode == InputMode.INSERT else vi_cmd
+    return emacs
 
 
-def get_prompt_tokens(command):
+def get_prompt_tokens(
+    prompt, ps1, show_mode, emacs_mode_string, vi_ins_mode_string, vi_cmd_mode_string
+):
     # https://github.com/jonathanslenders/python-prompt-toolkit/issues/247
-    if settings.PARSE_PS1:
-        prompt = Lexer().render(os.getenv('PS1'))
+    prompt = f'\x1b[1;36m{prompt}\x1b[m'
+    if ps1:
+        ps1_prompt = Lexer().render(os.getenv('PS1'))
 
         def _get_prompt_tokens():
-            _command = _get_prompt_command_token(command)
-            _prompt = prompt.rsplit('\n')
-            if len(_prompt) == 2:
-                _prompt, last_line = _prompt
-                last_line = f'{_command}{last_line}'
-                _prompt = f'{_prompt}\n{last_line}'
+            _prompt = prompt
+            if show_mode:
+                mode = _get_prompt_mode_token(
+                    emacs_mode_string, vi_ins_mode_string, vi_cmd_mode_string
+                )
+                _prompt = f'{mode} {prompt}'
+            _ps1_prompt = ps1_prompt.rsplit('\n')
+            if len(_ps1_prompt) == 2:
+                _ps1_prompt, last_line = _ps1_prompt
+                last_line = f'{_prompt}{last_line}'
+                _prompt = f'{_ps1_prompt}\n{last_line}'
             else:
-                (_prompt,) = _prompt
-                _prompt = f'{_command} {_prompt}'
+                (_ps1_prompt,) = _ps1_prompt
+                _prompt = f'{_prompt}{_ps1_prompt}'
             return ANSI(_prompt)
 
     else:
 
         def _get_prompt_tokens():
-            _command = _get_prompt_command_token(command)
-            return ANSI(f'{_command} > ')
+            _prompt = prompt
+            if show_mode:
+                mode = _get_prompt_mode_token(
+                    emacs_mode_string, vi_ins_mode_string, vi_cmd_mode_string
+                )
+                _prompt = f'{mode} {prompt}'
+            return ANSI(f'{_prompt} > ')
 
     return _get_prompt_tokens
 
