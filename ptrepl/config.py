@@ -15,7 +15,7 @@ DEFAULTS = {
     "VI_CMD_MODE_STRING": "(cmd)",
     "PARSE_PS1": False,  # experimental
     "LOCAL_SHADA": False,
-    "LOCAL_SHADA_PATH": ".direnv/ptrepl/",
+    "LOCAL_SHADA_PATH": "$DIRENV_DIR/ptrepl/",
 }
 
 

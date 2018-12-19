@@ -18,7 +18,8 @@ from .prompt import PtreplSession, get_prompt_tokens
 @click.argument('command')
 @click.option('--prompt', help='Override prompt')
 def main(command, **kwargs):
-    history = FileHistory(get_history_file(command))
+    local_shada_path = settings.LOCAL_SHADA_PATH if settings.LOCAL_SHADA else None
+    history = FileHistory(get_history_file(command, local_shada_path=local_shada_path))
     aliases = get_aliases(command)
     completer = BashCompleter(command, aliases)
 
