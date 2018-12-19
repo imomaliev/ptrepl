@@ -107,7 +107,7 @@ Default settings
         "READLINE_COMPLETION": false,
         "PARSE_PS1": false,
         "LOCAL_SHADA": false,
-        "LOCAL_SHADA_PATH": "$DIRENV_DIR/ptrepl/",
+        "LOCAL_SHADA_PATH": "$DIRENV_DIR/.direnv/ptrepl/",
     }
 
 Features
