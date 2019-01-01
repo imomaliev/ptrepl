@@ -1,7 +1,6 @@
 import sys
 
-import click
-
+from prompt_toolkit import print_formatted_text as print
 from prompt_toolkit.application.application import _do_wait_for_enter
 from prompt_toolkit.application.current import get_app
 from prompt_toolkit.application.run_in_terminal import run_coroutine_in_terminal
@@ -103,30 +102,24 @@ class CommandToolbar(SystemToolbar):
         assert isinstance(wait_for_enter, bool)
 
         def _run():
-            # Try to use the same input/output file descriptors as the one,
-            # used to run this application.
-            try:
-                input_fd = self.input.fileno()
-            except AttributeError:
-                input_fd = sys.stdin.fileno()
-            try:
-                output_fd = self.output.fileno()
-            except AttributeError:
-                output_fd = sys.stdout.fileno()
-
-            # Run sub process.
             def run_command():
                 self.print_text(display_before_text)
                 if command == 'history':
-                    for index, item in enumerate(
-                        app.layout.get_buffer_by_name(
-                            DEFAULT_BUFFER
-                        ).history.get_strings()
-                    ):
-                        click.echo(f'{index} {item}')
+                    output = '\n'.join(
+                        f'{index} {item}'
+                        for index, item in enumerate(
+                            app.layout.get_buffer_by_name(
+                                DEFAULT_BUFFER
+                            ).history.get_strings()
+                        )
+                    )
+                    print(output)
                 elif command == 'alias':
-                    for alias, alias_command in self.aliases.items():
-                        click.echo(f'alias "{alias}"="{alias_command}"')
+                    output = '\n'.join(
+                        (f'alias "{alias}"="{alias_command}"')
+                        for alias, alias_command in self.aliases.items()
+                    )
+                    print(output)
 
             yield run_in_executor(run_command)
 

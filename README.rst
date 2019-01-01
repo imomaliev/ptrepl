@@ -22,7 +22,7 @@ Make REPL out of any bash command
 
 Installation
 ------------
-Requires ``python>=3.6``, ``click``, ``prompt_toolkit>=2.0.7``, ``pygments``
+Requires ``python>=3.6``, ``prompt_toolkit>=2.0.7``, ``pygments``
 
 .. code:: bash
 

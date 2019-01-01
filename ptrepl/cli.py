@@ -1,7 +1,7 @@
 import subprocess
+import argparse
 
-import click
-
+from prompt_toolkit import print_formatted_text as print
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.shortcuts import CompleteStyle
 from prompt_toolkit.history import FileHistory
@@ -14,16 +14,12 @@ from .history import get_history_file
 from .prompt import PtreplSession, get_prompt_tokens
 
 
-@click.command()
-@click.argument('command')
-@click.option('--prompt', help='Override prompt')
-def main(command, **kwargs):
+def main(command, prompt=None):
     local_shada_path = settings.LOCAL_SHADA_PATH if settings.LOCAL_SHADA else None
     history = FileHistory(get_history_file(command, local_shada_path=local_shada_path))
     aliases = get_aliases(command)
     completer = BashCompleter(command, aliases)
 
-    prompt = kwargs.get('prompt') or command
     complete_style = (
         CompleteStyle.READLINE_LIKE
         if settings.READLINE_COMPLETION
@@ -45,6 +41,8 @@ def main(command, **kwargs):
         enable_history_search=True,
     )
 
+    prompt = prompt if prompt is not None else command
+
     while True:
         try:
             _get_prompt_tokens = get_prompt_tokens(
@@ -61,10 +59,10 @@ def main(command, **kwargs):
                     subcommand, session.default_buffer.history.get_strings()
                 )
             except BashHistoryIndexError as e:
-                click.echo(f'{command}: {e}: event not found')
+                print(f'{command}: {e}: event not found')
                 continue
             if not execute:
-                click.echo(subcommand)
+                print(subcommand)
                 continue
             session.default_buffer.history.get_strings()[-1] = subcommand
             subcommand = completer.get_real_subcommand(subcommand)
@@ -83,4 +81,12 @@ def main(command, **kwargs):
             break  # Control-D pressed.
         except KeyboardInterrupt:
             pass
-    click.echo('GoodBye!')
+    print('GoodBye!')
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('command')
+    parser.add_argument('--prompt')
+    args = parser.parse_args()
+    main(args.command, prompt=args.prompt)

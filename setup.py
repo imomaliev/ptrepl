@@ -33,8 +33,8 @@ setup(
     url='https://github.com/imomaliev/ptrepl',
     license='MIT',
     packages=find_packages(exclude=['tests']),
-    install_requires=['prompt_toolkit==2.0.7', 'click', 'pygments'],
-    entry_points={'console_scripts': ['ptrepl = ptrepl.cli:main']},
+    install_requires=['prompt_toolkit==2.0.7', 'pygments'],
+    entry_points={'console_scripts': ['ptrepl = ptrepl.cli:parse_args']},
     classifiers=[
         "Development Status :: 6 - Mature",
         "Environment :: Console",
