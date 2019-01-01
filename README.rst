@@ -28,6 +28,7 @@ Requires ``python>=3.6``, ``prompt_toolkit>=2.0.7``, ``pygments``
 
     pip install ptrepl
 
+``ptrepl`` vendors https://github.com/xonsh/py-bash-completion
 
 Usage
 -----
