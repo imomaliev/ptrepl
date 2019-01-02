@@ -67,14 +67,22 @@ Config
 ------
 Place settings file in :bash:``$XDG_CONFIG_HOME/ptrepl/config.json``
 
+Here is example of config with enabled vi mode and git alias
+
 .. code:: json
 
     {
         "settings": {
-            "PARSE_PS1": true,
+            "EXIT_COMMAND": "exit",
             "EDITING_MODE": "vi",
-            "READLINE_COMPLETION": true,
-            "LOCAL_SHADA": true
+            "SHOW_MODE_IN_PROMPT": true,
+            "EMACS_MODE_STRING": "@",
+            "VI_INS_MODE_STRING": "+",
+            "VI_CMD_MODE_STRING": ":",
+            "READLINE_COMPLETION": false,
+            "PARSE_PS1": false,
+            "LOCAL_SHADA": false,
+            "LOCAL_SHADA_PATH": "$PWD/.ptrepl/",
         },
         "alias": {
             "git st": "git status"
