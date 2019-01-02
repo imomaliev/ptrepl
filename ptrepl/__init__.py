@@ -5,4 +5,4 @@ Make REPL out of any bash command
 """
 
 
-__version__ = '0.9.4'
+__version__ = '0.9.5'

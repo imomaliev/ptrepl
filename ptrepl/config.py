@@ -25,7 +25,8 @@ def get_config_file():
         with path.open('r') as _config_file:
             config = json.load(_config_file)
     else:
-        with open(path, 'w') as _config_file:
+        path.parent.mkdir(parents=True)
+        with open(path, 'w+') as _config_file:
             config = {'settings': {}}
             _config_file.write(json.dumps(config))
     return config
