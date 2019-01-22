@@ -55,17 +55,18 @@ def main(command, prompt=None):
             )
             subcommand = session.prompt(_get_prompt_tokens)
             try:
-                subcommand, execute = expand_history(
+                expanded_subcommand, execute = expand_history(
                     subcommand, session.default_buffer.history.get_strings()
                 )
             except BashHistoryIndexError as e:
                 print(f'{command}: {e}: event not found')
                 continue
             if not execute:
-                print(subcommand)
+                print(expanded_subcommand)
                 continue
-            session.default_buffer.history.get_strings()[-1] = subcommand
-            subcommand = completer.get_real_subcommand(subcommand)
+            if subcommand != expanded_subcommand:
+                session.default_buffer.history.get_strings()[-1] = expanded_subcommand
+            subcommand = completer.get_real_subcommand(expanded_subcommand)
             if subcommand is None:
                 break
 
