@@ -22,11 +22,13 @@ Make REPL out of any bash command
 
 Installation
 ------------
-Requires ``python>=3.6``, ``prompt_toolkit>=2.0.7``, ``pygments``
+Requires ``python>=3.6``, ``prompt_toolkit>=2.0.7,<3.0.0``, ``pygments``
+
+Recommended way of installation is via ``pipx``
 
 .. code:: bash
 
-    pip install ptrepl
+    pipx install ptrepl
 
 ``ptrepl`` vendors https://github.com/xonsh/py-bash-completion
 
