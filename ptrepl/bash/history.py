@@ -91,7 +91,7 @@ class BashHistoryIndexError(IndexError):
 
 
 def expand_history(command, history):
-    history_num = re.compile(r'(?<!\\)!-?\d+')
+    history_num = re.compile(r"(?<!\\)!-?\d+")
     res = history_num.search(command)
     while res is not None:
         match = res.group(0)
@@ -105,7 +105,7 @@ def expand_history(command, history):
         command = command[: span[0]] + history_command + command[span[1] :]
         res = history_num.search(command)
     try:
-        command = command.replace('!!', history[-2])
+        command = command.replace("!!", history[-2])
     except IndexError:
         pass
     return command, True

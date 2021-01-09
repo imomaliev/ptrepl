@@ -64,9 +64,9 @@ def get_prompt_tokens(
     prompt, ps1, show_mode, emacs_mode_string, vi_ins_mode_string, vi_cmd_mode_string
 ):
     # https://github.com/jonathanslenders/python-prompt-toolkit/issues/247
-    prompt = f'\x1b[1;36m{prompt}\x1b[m'
+    prompt = f"\x1b[1;36m{prompt}\x1b[m"
     if ps1:
-        ps1_prompt = Lexer().render(os.getenv('PS1'))
+        ps1_prompt = Lexer().render(os.getenv("PS1"))
 
         def _get_prompt_tokens():
             _prompt = prompt
@@ -74,15 +74,15 @@ def get_prompt_tokens(
                 mode = _get_prompt_mode_token(
                     emacs_mode_string, vi_ins_mode_string, vi_cmd_mode_string
                 )
-                _prompt = f'{mode} {prompt}'
-            _ps1_prompt = ps1_prompt.rsplit('\n')
+                _prompt = f"{mode} {prompt}"
+            _ps1_prompt = ps1_prompt.rsplit("\n")
             if len(_ps1_prompt) == 2:
                 _ps1_prompt, last_line = _ps1_prompt
-                last_line = f'{_prompt}{last_line}'
-                _prompt = f'{_ps1_prompt}\n{last_line}'
+                last_line = f"{_prompt}{last_line}"
+                _prompt = f"{_ps1_prompt}\n{last_line}"
             else:
                 (_ps1_prompt,) = _ps1_prompt
-                _prompt = f'{_prompt}{_ps1_prompt}'
+                _prompt = f"{_prompt}{_ps1_prompt}"
             return ANSI(_prompt)
 
     else:
@@ -93,8 +93,8 @@ def get_prompt_tokens(
                 mode = _get_prompt_mode_token(
                     emacs_mode_string, vi_ins_mode_string, vi_cmd_mode_string
                 )
-                _prompt = f'{mode} {prompt}'
-            return ANSI(f'{_prompt} > ')
+                _prompt = f"{mode} {prompt}"
+            return ANSI(f"{_prompt} > ")
 
     return _get_prompt_tokens
 
@@ -110,9 +110,11 @@ class PtreplSession(PromptSession):
 
         # Create functions that will dynamically split the prompt. (If we have
         # a multiline prompt.)
-        has_before_fragments, get_prompt_text_1, get_prompt_text_2 = _split_multiline_prompt(
-            self._get_prompt
-        )
+        (
+            has_before_fragments,
+            get_prompt_text_1,
+            get_prompt_text_2,
+        ) = _split_multiline_prompt(self._get_prompt)
 
         default_buffer = self.default_buffer
         search_buffer = self.search_buffer
@@ -124,7 +126,7 @@ class PtreplSession(PromptSession):
             ConditionalProcessor(
                 AppendAutoSuggestion(), has_focus(default_buffer) & ~is_done
             ),
-            ConditionalProcessor(PasswordProcessor(), dyncond('is_password')),
+            ConditionalProcessor(PasswordProcessor(), dyncond("is_password")),
             DisplayMultipleCursors(),
             # Users can insert processors here.
             DynamicProcessor(lambda: merge_processors(self.input_processors or [])),
@@ -134,9 +136,9 @@ class PtreplSession(PromptSession):
         bottom_toolbar = ConditionalContainer(
             Window(
                 FormattedTextControl(
-                    lambda: self.bottom_toolbar, style='class:bottom-toolbar.text'
+                    lambda: self.bottom_toolbar, style="class:bottom-toolbar.text"
                 ),
-                style='class:bottom-toolbar',
+                style="class:bottom-toolbar",
                 dont_extend_height=True,
                 height=Dimension(min=1),
             ),
@@ -146,17 +148,17 @@ class PtreplSession(PromptSession):
         )
 
         search_toolbar = SearchToolbar(
-            search_buffer, ignore_case=dyncond('search_ignore_case')
+            search_buffer, ignore_case=dyncond("search_ignore_case")
         )
 
         search_buffer_control = SearchBufferControl(
             buffer=search_buffer,
             input_processors=[ReverseSearchProcessor()],
-            ignore_case=dyncond('search_ignore_case'),
+            ignore_case=dyncond("search_ignore_case"),
         )
 
         system_toolbar = SystemToolbar(
-            enable_global_bindings=dyncond('enable_system_prompt')
+            enable_global_bindings=dyncond("enable_system_prompt")
         )
 
         command_toolbar = CommandToolbar(
@@ -185,7 +187,7 @@ class PtreplSession(PromptSession):
             get_line_prefix=partial(
                 self._get_line_prefix, get_prompt_text_2=get_prompt_text_2
             ),
-            wrap_lines=dyncond('wrap_lines'),
+            wrap_lines=dyncond("wrap_lines"),
         )
 
         @Condition
@@ -254,15 +256,15 @@ class PtreplSession(PromptSession):
                 ),
                 ConditionalContainer(ValidationToolbar(), ~is_done),
                 ConditionalContainer(
-                    system_toolbar, dyncond('enable_system_prompt') & ~is_done
+                    system_toolbar, dyncond("enable_system_prompt") & ~is_done
                 ),
                 ConditionalContainer(command_toolbar, ~is_done),
                 # In multiline mode, we use two toolbars for 'arg' and 'search'.
                 ConditionalContainer(
                     Window(FormattedTextControl(self._get_arg_text), height=1),
-                    dyncond('multiline') & has_arg,
+                    dyncond("multiline") & has_arg,
                 ),
-                ConditionalContainer(search_toolbar, dyncond('multiline') & ~is_done),
+                ConditionalContainer(search_toolbar, dyncond("multiline") & ~is_done),
                 bottom_toolbar,
             ]
         )

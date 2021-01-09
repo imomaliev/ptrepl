@@ -25,12 +25,12 @@ def main(command, prompt=None):
         if settings.READLINE_COMPLETION
         else CompleteStyle.COLUMN
     )
-    vi_mode = settings.EDITING_MODE == 'vi'
+    vi_mode = settings.EDITING_MODE == "vi"
 
     session = PtreplSession(
         command,
         aliases,
-        message='',
+        message="",
         completer=completer,
         complete_style=complete_style,
         history=history,
@@ -59,7 +59,7 @@ def main(command, prompt=None):
                     subcommand, session.default_buffer.history.get_strings()
                 )
             except BashHistoryIndexError as e:
-                print(f'{command}: {e}: event not found')
+                print(f"{command}: {e}: event not found")
                 continue
             if not execute:
                 print(expanded_subcommand)
@@ -70,24 +70,24 @@ def main(command, prompt=None):
             if subcommand is None:
                 break
 
-            call_command = f'{command} {subcommand}'
+            call_command = f"{command} {subcommand}"
             for alias, alias_command in aliases.items():
                 if call_command.startswith(alias):
                     if call_command != alias:
-                        alias = f'{alias} '
-                        alias_command = f'{alias_command} '
+                        alias = f"{alias} "
+                        alias_command = f"{alias_command} "
                     call_command = call_command.replace(alias, alias_command)
             subprocess.call(call_command, shell=True)
         except EOFError:
             break  # Control-D pressed.
         except KeyboardInterrupt:
             pass
-    print('GoodBye!')
+    print("GoodBye!")
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('command')
-    parser.add_argument('--prompt')
+    parser.add_argument("command")
+    parser.add_argument("--prompt")
     args = parser.parse_args()
     main(args.command, prompt=args.prompt)

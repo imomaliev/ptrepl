@@ -17,24 +17,24 @@ class BashCompleter(Completer):
         word = document.get_word_before_cursor(WORD=True)
         if not subcommand:
             return
-        line = f'{command} {subcommand}'
+        line = f"{command} {subcommand}"
         start_position = -len(word)
         split = line.split()
-        if len(split) > 1 and not line.endswith(' '):
+        if len(split) > 1 and not line.endswith(" "):
             prefix = split[-1]
             begidx = len(line.rsplit(prefix)[0])
         else:
-            prefix = ''
+            prefix = ""
             begidx = len(line)
 
         endidx = len(line)
         for completion in bash_completions(prefix, line, begidx, endidx)[0]:
-            yield Completion(completion.strip('\'"'), start_position=start_position)
+            yield Completion(completion.strip("'\""), start_position=start_position)
         if len(split) == 2:
             for a in self.aliases:
-                if a.startswith(f'{command} {prefix}'):
+                if a.startswith(f"{command} {prefix}"):
                     yield Completion(
-                        a.replace(f'{command} ', ''), start_position=start_position
+                        a.replace(f"{command} ", ""), start_position=start_position
                     )
 
     def get_real_subcommand(self, subcommand):
@@ -45,7 +45,7 @@ class BashCompleter(Completer):
         subcommand = subcommand.lstrip()
         if subcommand.strip() == settings.EXIT_COMMAND:
             return None
-        command_with_space = f'{self.command} '
+        command_with_space = f"{self.command} "
         if subcommand.startswith(command_with_space):
-            subcommand = subcommand.replace(command_with_space, '')
+            subcommand = subcommand.replace(command_with_space, "")
         return subcommand

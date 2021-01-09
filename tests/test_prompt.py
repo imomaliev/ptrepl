@@ -10,14 +10,14 @@ def test_prompt_mode_token_emacs():
     app = DummyApplication()
     app.editing_mode = EditingMode.EMACS
     with current.set_app(app):
-        assert _get_prompt_mode_token('@', '+', ':') == '@'
+        assert _get_prompt_mode_token("@", "+", ":") == "@"
 
 
 def test_prompt_mode_token_vi():
     app = DummyApplication()
     app.editing_mode = EditingMode.VI
     with current.set_app(app):
-        assert _get_prompt_mode_token('@', '+', ':') == '+'
+        assert _get_prompt_mode_token("@", "+", ":") == "+"
 
 
 def test_prompt_mode_token_vi_ins():
@@ -25,7 +25,7 @@ def test_prompt_mode_token_vi_ins():
     app.editing_mode = EditingMode.VI
     app.vi_state.input_mode = InputMode.INSERT
     with current.set_app(app):
-        assert _get_prompt_mode_token('@', '+', ':') == '+'
+        assert _get_prompt_mode_token("@", "+", ":") == "+"
 
 
 def test_prompt_mode_token_vi_cmd():
@@ -33,4 +33,4 @@ def test_prompt_mode_token_vi_cmd():
     app.editing_mode = EditingMode.VI
     app.vi_state.input_mode = InputMode.NAVIGATION
     with current.set_app(app):
-        assert _get_prompt_mode_token('@', '+', ':') == ':'
+        assert _get_prompt_mode_token("@", "+", ":") == ":"

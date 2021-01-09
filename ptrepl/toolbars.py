@@ -1,5 +1,3 @@
-import sys
-
 from prompt_toolkit import print_formatted_text as print
 from prompt_toolkit.application.application import _do_wait_for_enter
 from prompt_toolkit.application.current import get_app
@@ -29,12 +27,12 @@ from prompt_toolkit.renderer import print_formatted_text
 from prompt_toolkit.widgets.toolbars import SystemToolbar
 
 
-COMMAND_BUFFER = 'COMMAND_BUFFER'
+COMMAND_BUFFER = "COMMAND_BUFFER"
 
 
 class CommandToolbar(SystemToolbar):
     def __init__(
-        self, command, aliases, prompt='Command mode: ', enable_global_bindings=True
+        self, command, aliases, prompt="Command mode: ", enable_global_bindings=True
     ):
         self.command = command
         self.aliases = aliases
@@ -48,15 +46,15 @@ class CommandToolbar(SystemToolbar):
 
         self.buffer_control = BufferControl(
             buffer=self.system_buffer,
-            lexer=SimpleLexer(style='class:system-toolbar.text'),
+            lexer=SimpleLexer(style="class:system-toolbar.text"),
             input_processors=[
-                BeforeInput(lambda: self.prompt, style='class:system-toolbar')
+                BeforeInput(lambda: self.prompt, style="class:system-toolbar")
             ],
             key_bindings=self._bindings,
         )
 
         self.window = Window(
-            self.buffer_control, height=1, style='class:system-toolbar'
+            self.buffer_control, height=1, style="class:system-toolbar"
         )
 
         self.container = ConditionalContainer(
@@ -85,8 +83,8 @@ class CommandToolbar(SystemToolbar):
         app,
         command,
         wait_for_enter=True,
-        display_before_text='',
-        wait_text='Press ENTER to continue...',
+        display_before_text="",
+        wait_text="Press ENTER to continue...",
     ):
         """
         Run command (While hiding the prompt. When finished, all the
@@ -104,9 +102,9 @@ class CommandToolbar(SystemToolbar):
         def _run():
             def run_command():
                 self.print_text(display_before_text)
-                if command == 'history':
-                    output = '\n'.join(
-                        f'{index} {item}'
+                if command == "history":
+                    output = "\n".join(
+                        f"{index} {item}"
                         for index, item in enumerate(
                             app.layout.get_buffer_by_name(
                                 DEFAULT_BUFFER
@@ -114,8 +112,8 @@ class CommandToolbar(SystemToolbar):
                         )
                     )
                     print(output)
-                elif command == 'alias':
-                    output = '\n'.join(
+                elif command == "alias":
+                    output = "\n".join(
                         (f'alias "{alias}"="{alias_command}"')
                         for alias, alias_command in self.aliases.items()
                     )
@@ -136,15 +134,15 @@ class CommandToolbar(SystemToolbar):
         emacs_bindings = KeyBindings()
         handle = emacs_bindings.add
 
-        @handle('escape', filter=focused)
-        @handle('c-g', filter=focused)
-        @handle('c-c', filter=focused)
+        @handle("escape", filter=focused)
+        @handle("c-g", filter=focused)
+        @handle("c-c", filter=focused)
         def _(event):
             """Hide system prompt."""
             self.system_buffer.reset()
             event.app.layout.focus_last()
 
-        @handle('enter', filter=focused)
+        @handle("enter", filter=focused)
         def _(event):
             """Run command."""
             self.run(
@@ -159,15 +157,15 @@ class CommandToolbar(SystemToolbar):
         vi_bindings = KeyBindings()
         handle = vi_bindings.add
 
-        @handle('escape', filter=focused)
-        @handle('c-c', filter=focused)
+        @handle("escape", filter=focused)
+        @handle("c-c", filter=focused)
         def _(event):
             """Hide command prompt."""
             event.app.vi_state.input_mode = InputMode.NAVIGATION
             self.system_buffer.reset()
             event.app.layout.focus_last()
 
-        @handle('enter', filter=focused)
+        @handle("enter", filter=focused)
         def _(event):
             """Run command."""
             event.app.vi_state.input_mode = InputMode.NAVIGATION
@@ -184,12 +182,12 @@ class CommandToolbar(SystemToolbar):
         global_bindings = KeyBindings()
         handle = global_bindings.add
 
-        @handle(Keys.Escape, ':', filter=~focused & emacs_mode, is_global=True)
+        @handle(Keys.Escape, ":", filter=~focused & emacs_mode, is_global=True)
         def _(event):
             """M-'!' will focus this user control."""
             event.app.layout.focus(self.window)
 
-        @handle(':', filter=~focused & vi_mode & vi_navigation_mode, is_global=True)
+        @handle(":", filter=~focused & vi_mode & vi_navigation_mode, is_global=True)
         def _(event):
             """Focus."""
             event.app.vi_state.input_mode = InputMode.INSERT

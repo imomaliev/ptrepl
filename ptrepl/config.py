@@ -20,14 +20,14 @@ DEFAULTS = {
 
 
 def get_config_file():
-    path = Path(XDG_CONFIG_HOME, 'ptrepl', 'config.json')
+    path = Path(XDG_CONFIG_HOME, "ptrepl", "config.json")
     if path.exists():
-        with path.open('r') as _config_file:
+        with path.open("r") as _config_file:
             config = json.load(_config_file)
     else:
         path.parent.mkdir(parents=True)
-        with open(path, 'w+') as _config_file:
-            config = {'settings': {}}
+        with open(path, "w+") as _config_file:
+            config = {"settings": {}}
             _config_file.write(json.dumps(config))
     return config
 
@@ -67,14 +67,14 @@ class Settings:
 
 config_file = get_config_file()
 settings = Settings(
-    user_settings=get_config(config_file, 'settings'), defaults=DEFAULTS
+    user_settings=get_config(config_file, "settings"), defaults=DEFAULTS
 )
 
 
 def get_aliases(command):
-    command = f'{command} '
+    command = f"{command} "
     return {
         k: v
-        for k, v in get_config(config_file, 'alias').items()
+        for k, v in get_config(config_file, "alias").items()
         if k.startswith(command)
     }

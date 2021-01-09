@@ -62,20 +62,18 @@ import subprocess
 
 from collections import OrderedDict
 
-from pygments.token import Token
-
 
 regexes = OrderedDict(
     (
-        ('cwd', re.compile(r'^\\w')),
-        ('cmd', re.compile(r'^\$\([^\)]*\)')),
-        ('array', re.compile(r'^\$\{[^\}]*\}')),
-        ('datetime', re.compile(r'^\\D\{[^\}]*\}')),
-        ('newline', re.compile(r'^\\n')),
-        ('user', re.compile(r'^\\u')),
-        ('hostname', re.compile(r'^\\h')),
-        ('dollar', re.compile(r'^\\\$')),
-        ('string', re.compile(r'^.')),
+        ("cwd", re.compile(r"^\\w")),
+        ("cmd", re.compile(r"^\$\([^\)]*\)")),
+        ("array", re.compile(r"^\$\{[^\}]*\}")),
+        ("datetime", re.compile(r"^\\D\{[^\}]*\}")),
+        ("newline", re.compile(r"^\\n")),
+        ("user", re.compile(r"^\\u")),
+        ("hostname", re.compile(r"^\\h")),
+        ("dollar", re.compile(r"^\\\$")),
+        ("string", re.compile(r"^.")),
     )
 )
 
@@ -90,80 +88,79 @@ class Lexer(object):
         return None
 
     def cwd(self, raw_token):
-        return os.getcwd().replace(os.path.expanduser('~'), '~')
+        return os.getcwd().replace(os.path.expanduser("~"), "~")
 
     def _get_git_branch(self):
-        if os.path.exists('.git'):
+        if os.path.exists(".git"):
             branch = self.cmd(
                 "git symbolic-ref HEAD 2> /dev/null || git describe --tags --exact-match HEAD 2> /dev/null || git rev-parse HEAD",
                 is_script=False,
             )
-            if 'refs/heads/' in branch:
-                branch = branch.replace('refs/heads/', '')
+            if "refs/heads/" in branch:
+                branch = branch.replace("refs/heads/", "")
             else:
-                branch = f'({branch})'
+                branch = f"({branch})"
         else:
-            return ''
-        return f'[{branch}] '
+            return ""
+        return f"[{branch}] "
 
     def _get_hg_branch(self):
-        if os.path.exists('.hg'):
+        if os.path.exists(".hg"):
             branch = self.cmd("$(hg prompt '{branch}')", is_script=True)
-            return f'[{branch}] '
+            return f"[{branch}] "
         else:
-            return ''
+            return ""
 
     def _get_direnv(self):
-        if os.path.exists('.direnv'):
-            return f'{{{os.path.basename(os.getcwd())}}} '
+        if os.path.exists(".direnv"):
+            return f"{{{os.path.basename(os.getcwd())}}} "
         else:
-            return ''
+            return ""
 
     def cmd(self, raw_token, is_script=True):
-        if '__git_ps1' in raw_token:
+        if "__git_ps1" in raw_token:
             return self._get_git_branch()
-        if '__hg_ps1' in raw_token:
+        if "__hg_ps1" in raw_token:
             return self._get_hg_branch()
-        if '__venv_ps1' in raw_token:
+        if "__venv_ps1" in raw_token:
             return self._get_venv()
-        if '__dotfiles_ps1' in raw_token:
+        if "__dotfiles_ps1" in raw_token:
             return self._get_direnv()
         cmd = f'echo "{raw_token}"' if is_script else raw_token
         return subprocess.check_output(
-            ['bash', '-c', cmd], universal_newlines=True, stderr=subprocess.PIPE
-        ).strip('\n')
+            ["bash", "-c", cmd], universal_newlines=True, stderr=subprocess.PIPE
+        ).strip("\n")
 
     def _get_venv(self):
-        venv = os.getenv('VIRTUAL_ENV') or ''
-        venv = os.getcwd() if venv.endswith('.venv') else venv
+        venv = os.getenv("VIRTUAL_ENV") or ""
+        venv = os.getcwd() if venv.endswith(".venv") else venv
         if venv:
-            return f'({os.path.basename(venv)}) '
+            return f"({os.path.basename(venv)}) "
         else:
-            return ''
+            return ""
 
     def datetime(self, raw_token):
         return datetime.datetime.now().strftime(raw_token[3:-1])
 
     def newline(self, raw_token):
-        return '\n'
+        return "\n"
 
     def user(self, raw_token):
-        return os.getenv('USERNAME') or os.getenv('USER')
+        return os.getenv("USERNAME") or os.getenv("USER")
 
     def hostname(self, raw_token):
         return os.uname()[1]
 
     def dollar(self, raw_token):
-        return '$'
+        return "$"
 
     def string(self, raw_token):
         return raw_token
 
     def array(self, raw_token):
-        return ''
+        return ""
 
     def tokenize(self, source):
-        style = getattr(Token, 'NO_COLOR')
         while True:
             for _type, regex in regexes.items():
                 captures = self.regexec(regex, source)
@@ -175,8 +172,8 @@ class Lexer(object):
                 break
 
     def render(self, source):
-        source = ''.join(self.tokenize(source))
-        source = source.replace('\\e', '\x1b')
-        source = source.replace('\\[', '')
-        source = source.replace('\\]', '')
+        source = "".join(self.tokenize(source))
+        source = source.replace("\\e", "\x1b")
+        source = source.replace("\\[", "")
+        source = source.replace("\\]", "")
         return source
